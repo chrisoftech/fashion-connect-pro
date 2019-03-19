@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "128942478127",
+    "firebase_url": "https://fashion-connect-4132b.firebaseio.com",
+    "project_id": "fashion-connect-4132b",
+    "storage_bucket": "fashion-connect-4132b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:128942478127:android:67f74c915446b0af",
+        "android_client_info": {
+          "package_name": "com.example.fashion_connect"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "128942478127-jj88dfcgjdi6o900d0qc2uqt4icch16k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAyfA_yQG_uvQIABAFj4fL-4OyDWgYnhws"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
