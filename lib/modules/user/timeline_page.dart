@@ -2,7 +2,7 @@ import 'package:fashion_connect/blocs/blocs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class Timeline extends StatelessWidget {
+class TimelinePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AuthBloc _authBloc = BlocProvider.of<AuthBloc>(context);
