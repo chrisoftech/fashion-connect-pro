@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:fashion_connect/models/models.dart';
 import 'package:fashion_connect/repositories/repositories.dart';
 import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
@@ -37,12 +38,12 @@ class AppStarted extends AuthEvent {
 }
 
 class AuthLoggedIn extends AuthEvent {
-  final String token;
+  final User user;
 
-  AuthLoggedIn({@required this.token}) : super([token]);
+  AuthLoggedIn({@required this.user}) : super([user]);
 
   @override
-  String toString() => 'AuthLoggedIn { token: $token } ';
+  String toString() => 'AuthLoggedIn { uid: ${user.uid}, username: ${user.username} } ';
 }
 
 class AuthLoggedOut extends AuthEvent {
@@ -63,8 +64,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     dispatch(AppStarted());
   }
 
-  void onLoggedIn({@required String token}) {
-    dispatch(AuthLoggedIn(token: token));
+  void onLoggedIn({@required User user}) {
+    dispatch(AuthLoggedIn(user: user));
   }
   
   void onLoggedOut() {
@@ -86,7 +87,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     if (event is AuthLoggedIn) {
       yield AuthLoading();
-      await authRepository.persistUser(token: event.token);
+      await authRepository.persistUser(user: event.user);
       yield AuthAuthenticated();
     }
 

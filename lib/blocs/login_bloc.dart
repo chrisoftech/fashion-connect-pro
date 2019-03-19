@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fashion_connect/blocs/blocs.dart';
+import 'package:fashion_connect/models/models.dart';
 import 'package:fashion_connect/repositories/repositories.dart';
 import 'package:meta/meta.dart';
 
@@ -33,12 +34,21 @@ abstract class LoginEvent extends Equatable {
   LoginEvent([List props = const []]) : super(props);
 }
 
+class LoginReset extends LoginEvent {
+  @override
+  String toString() => 'LoginReset';
+}
+
 class LoginButtonPressed extends LoginEvent {
   final String username;
   final String password;
+  final AuthMode authMode;
 
-  LoginButtonPressed({@required this.username, @required this.password})
-      : super([username, password]);
+  LoginButtonPressed(
+      {@required this.username,
+      @required this.password,
+      @required this.authMode})
+      : super([username, password, authMode]);
 
   @override
   String toString() =>
@@ -56,25 +66,40 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   @override
   LoginState get initialState => LoginInitial();
 
+  void onLoginReset() {
+    dispatch(LoginReset());
+  }
+
   void onLoginButtonPressed(
-      {@required String username, @required String password}) {
-    dispatch(LoginButtonPressed(username: username, password: password));
+      {@required String username,
+      @required String password,
+      @required AuthMode authMode}) {
+    dispatch(LoginButtonPressed(
+        username: username, password: password, authMode: authMode));
   }
 
   @override
   Stream<LoginState> mapEventToState(
       LoginState currentState, LoginEvent event) async* {
+        
+    if (event is LoginReset) {
+      yield LoginInitial();
+    }
+
     if (event is LoginButtonPressed) {
       yield LoginLoading();
 
       try {
-        final String token = await authRepository.authenticate(
-            username: event.username, password: event.password);
+        final User user = await authRepository.authenticate(
+            username: event.username,
+            password: event.password,
+            authMode: event.authMode);
 
-        authBloc.onLoggedIn(token: token);
+        authBloc.onLoggedIn(user: user);
         yield LoginInitial();
       } catch (e) {
-        yield LoginFailure(error: e.toString());
+        print('Bloc error ${e.message}');
+        yield LoginFailure(error: e.message);
       }
     }
   }

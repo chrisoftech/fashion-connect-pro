@@ -37,7 +37,7 @@ class _AuthFormState extends State<AuthForm> {
         }
       },
       onSaved: (String value) {
-        _formData['username'] = '$value@fashion_connect.com';
+        _formData['username'] = '$value@fashionconnect.com';
       },
     );
   }
@@ -125,10 +125,8 @@ class _AuthFormState extends State<AuthForm> {
     _loginBloc.onLoginButtonPressed(
       username: _formData['username'],
       password: _formData['password'],
-      // authMode: _authMode,
+      authMode: _authMode,
     );
-
-    print('${_formData['username']}, ${_formData['password']}');
   }
 
   Widget _buildAuthModeControl(
@@ -283,6 +281,7 @@ class _AuthFormState extends State<AuthForm> {
                 backgroundColor: Colors.red,
               ),
             );
+            _loginBloc.onLoginReset();
           });
         }
 
