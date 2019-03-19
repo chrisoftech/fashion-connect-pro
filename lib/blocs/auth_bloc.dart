@@ -59,6 +59,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   @override
   AuthState get initialState => AuthUninitialized();
 
+  void onAppStarted() {
+    dispatch(AppStarted());
+  }
+
+  void onLoggedIn({@required String token}) {
+    dispatch(AuthLoggedIn(token: token));
+  }
+  
+  void onLoggedOut() {
+    dispatch(AuthLoggedOut());
+  }
+
   @override
   Stream<AuthState> mapEventToState(
       AuthState currentState, AuthEvent event) async* {

@@ -1,7 +1,15 @@
+import 'package:fashion_connect/blocs/blocs.dart';
 import 'package:fashion_connect/models/models.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AuthForm extends StatefulWidget {
+  final AuthBloc authBloc;
+  final LoginBloc loginBloc;
+
+  const AuthForm({Key key, @required this.authBloc, @required this.loginBloc})
+      : super(key: key);
+
   @override
   _AuthFormState createState() => _AuthFormState();
 }
@@ -13,6 +21,8 @@ class _AuthFormState extends State<AuthForm> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final _passwordController = TextEditingController();
+
+  LoginBloc get _loginBloc => widget.loginBloc;
 
   Widget _buildUsernameTextField() {
     return TextFormField(
@@ -27,7 +37,7 @@ class _AuthFormState extends State<AuthForm> {
         }
       },
       onSaved: (String value) {
-        _formData['username'] = '$value@fashion_konnect.com';
+        _formData['username'] = '$value@fashion_connect.com';
       },
     );
   }
@@ -75,13 +85,14 @@ class _AuthFormState extends State<AuthForm> {
     );
   }
 
-  Widget _buildLoginControl({@required BuildContext context}) {
+  Widget _buildLoginControl(
+      {@required BuildContext context, @required LoginState state}) {
     return Expanded(
       child: Material(
         elevation: 2,
         borderRadius: BorderRadius.circular(10.0),
         child: InkWell(
-          onTap: submitForm,
+          onTap: state is! LoginLoading ? submitForm : null,
           child: Container(
             height: 40.0,
             alignment: Alignment.center,
@@ -91,11 +102,13 @@ class _AuthFormState extends State<AuthForm> {
                 Radius.circular(10.0),
               ),
             ),
-            child: Text(_authMode == AuthMode.Login ? 'Login' : 'Sign Up',
-                style: TextStyle(
-                    color: Theme.of(context).accentColor,
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.bold)),
+            child: state is LoginLoading
+                ? CircularProgressIndicator()
+                : Text(_authMode == AuthMode.Login ? 'Login' : 'Sign Up',
+                    style: TextStyle(
+                        color: Theme.of(context).accentColor,
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold)),
           ),
         ),
       ),
@@ -108,10 +121,18 @@ class _AuthFormState extends State<AuthForm> {
       return;
     }
 
+    _formKey.currentState.save();
+    _loginBloc.onLoginButtonPressed(
+      username: _formData['username'],
+      password: _formData['password'],
+      // authMode: _authMode,
+    );
+
     print('${_formData['username']}, ${_formData['password']}');
   }
 
-  Widget _buildAuthModeControl({@required BuildContext context}) {
+  Widget _buildAuthModeControl(
+      {@required BuildContext context, @required LoginState state}) {
     return Container(
       height: 50.0,
       width: 300,
@@ -132,8 +153,7 @@ class _AuthFormState extends State<AuthForm> {
                   : 'Already have an account?',
               style: TextStyle(color: Theme.of(context).primaryColorLight),
             ),
-            // SizedBox(width: 10.0),
-            GestureDetector(
+            InkWell(
                 child: Container(
                   padding:
                       EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
@@ -141,23 +161,25 @@ class _AuthFormState extends State<AuthForm> {
                       style: TextStyle(
                           fontSize: 16.0, fontWeight: FontWeight.bold)),
                 ),
-                onTap: () {
-                  setState(() {
-                    _authMode == AuthMode.Login
-                        ? _authMode = AuthMode.SignUp
-                        : _authMode = AuthMode.Login;
+                onTap: state is LoginLoading
+                    ? null
+                    : () {
+                        setState(() {
+                          _authMode == AuthMode.Login
+                              ? _authMode = AuthMode.SignUp
+                              : _authMode = AuthMode.Login;
 
-                    _formKey.currentState.reset();
-                    _passwordController.text = '';
-                  });
-                })
+                          _formKey.currentState.reset();
+                          _passwordController.text = '';
+                        });
+                      })
           ],
         ),
       ),
     );
   }
 
-  Widget _pageContent() {
+  Widget _pageContent({@required LoginState state}) {
     return SafeArea(
       child: GestureDetector(
         onTap: () {
@@ -222,7 +244,8 @@ class _AuthFormState extends State<AuthForm> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
-                                  _buildLoginControl(context: context),
+                                  _buildLoginControl(
+                                      context: context, state: state),
                                 ],
                               ),
                             ],
@@ -230,7 +253,7 @@ class _AuthFormState extends State<AuthForm> {
                         ),
                       ),
                     ),
-                    _buildAuthModeControl(context: context),
+                    _buildAuthModeControl(context: context, state: state),
                   ],
                 ),
               ),
@@ -241,8 +264,30 @@ class _AuthFormState extends State<AuthForm> {
     );
   }
 
+  void _onWidgetDidBuild(Function callback) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      callback();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return _pageContent();
+    return BlocBuilder(
+      bloc: _loginBloc,
+      builder: (BuildContext context, LoginState state) {
+        if (state is LoginFailure) {
+          _onWidgetDidBuild(() {
+            Scaffold.of(context).showSnackBar(
+              SnackBar(
+                content: Text('${state.error}'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          });
+        }
+
+        return _pageContent(state: state);
+      },
+    );
   }
 }
