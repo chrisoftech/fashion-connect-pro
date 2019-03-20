@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:fashion_connect/blocs/blocs.dart';
+import 'package:fashion_connect/models/models.dart';
 import 'package:fashion_connect/modules/modules.dart';
 import 'package:fashion_connect/repositories/repositories.dart';
 import 'package:fashion_connect/utilities/utilities.dart';
@@ -61,7 +62,9 @@ class _MyAppState extends State<MyApp> {
         }
 
         if (state is AuthAuthenticated) {
-          return TimelinePage();
+          return state.authMode == AuthMode.Login
+              ? TimelinePage()
+              : ProfileFormPage();
         }
 
         if (state is AuthUnauthenticated) {

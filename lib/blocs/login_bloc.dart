@@ -81,7 +81,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   @override
   Stream<LoginState> mapEventToState(
       LoginState currentState, LoginEvent event) async* {
-        
     if (event is LoginReset) {
       yield LoginInitial();
     }
@@ -95,7 +94,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
             password: event.password,
             authMode: event.authMode);
 
-        authBloc.onLoggedIn(user: user);
+        authBloc.onLoggedIn(user: user, authMode: event.authMode);
         yield LoginInitial();
       } catch (e) {
         print('Bloc error ${e.message}');
