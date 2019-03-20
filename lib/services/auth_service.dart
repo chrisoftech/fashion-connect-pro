@@ -14,4 +14,8 @@ class AuthService {
     return _db.createUserWithEmailAndPassword(
         email: username, password: password);
   }
+
+  Future<void> signout() {
+    return _db.signOut();
+  }
 }
