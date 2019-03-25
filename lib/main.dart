@@ -17,14 +17,22 @@ class SimpleBlocDelegate extends BlocDelegate {
 
 void main() {
   BlocSupervisor().delegate = SimpleBlocDelegate();
-  runApp(MyApp(authRepository: AuthRepository()));
+  runApp(MyApp(
+    authRepository: AuthRepository(),
+    profileRepository: ProfileRepository(),
+  ));
 }
 
 class MyApp extends StatefulWidget {
   final AuthRepository authRepository;
+  final ProfileRepository profileRepository;
 
-  const MyApp({Key key, @required this.authRepository})
+  const MyApp(
+      {Key key,
+      @required this.authRepository,
+      @required this.profileRepository})
       : assert(authRepository != null),
+        assert(profileRepository != null),
         super(key: key);
 
   @override
@@ -35,10 +43,12 @@ class _MyAppState extends State<MyApp> {
   AuthBloc _authBloc;
 
   AuthRepository get _authRepository => widget.authRepository;
+  ProfileRepository get _profileRepository => widget.profileRepository;
 
   @override
   void initState() {
-    _authBloc = AuthBloc(authRepository: _authRepository);
+    _authBloc = AuthBloc(
+        authRepository: _authRepository, profileRepository: _profileRepository);
     _authBloc.onAppStarted();
     super.initState();
   }
@@ -62,13 +72,13 @@ class _MyAppState extends State<MyApp> {
         }
 
         if (state is AuthAuthenticated) {
-          return state.authMode == AuthMode.Login
-              ? TimelinePage()
-              : ProfileFormPage();
+          return state.hasProfile ? TimelinePage() : ProfileFormPage();
         }
 
         if (state is AuthUnauthenticated) {
-          return AuthPage(authRepository: _authRepository);
+          return AuthPage(
+              authRepository: _authRepository,
+              profileRepository: _profileRepository);
         }
       },
     );
@@ -86,7 +96,10 @@ class _MyAppState extends State<MyApp> {
           primarySwatch: Colors.indigo,
           accentColor: Colors.yellow[700],
         ),
-        home: _buildHomePage(),
+        routes: <String, WidgetBuilder>{
+          '/': (BuildContext context) => _buildHomePage(),
+          '/timeline': (BuildContext context) => TimelinePage()
+        },
       ),
     );
   }

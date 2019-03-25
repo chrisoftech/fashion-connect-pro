@@ -58,10 +58,15 @@ class LoginButtonPressed extends LoginEvent {
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final AuthBloc authBloc;
   final AuthRepository authRepository;
+  final ProfileRepository profileRepository;
 
-  LoginBloc({@required this.authBloc, @required this.authRepository})
+  LoginBloc(
+      {@required this.authBloc,
+      @required this.authRepository,
+      @required this.profileRepository})
       : assert(authBloc != null),
-        assert(authRepository != null);
+        assert(authRepository != null),
+        assert(profileRepository != null);
 
   @override
   LoginState get initialState => LoginInitial();

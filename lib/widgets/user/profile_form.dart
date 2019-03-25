@@ -3,12 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProfileForm extends StatefulWidget {
+  final ProfileFormBloc profileFormBloc;
+
+  const ProfileForm({Key key, @required this.profileFormBloc})
+      : super(key: key);
+
   @override
   _ProfileFormState createState() => _ProfileFormState();
 }
 
 class _ProfileFormState extends State<ProfileForm> {
   AuthBloc _authBloc;
+
+  ProfileFormBloc get _profileFormBloc => widget.profileFormBloc;
 
   final Map<String, dynamic> _formData = {
     'firstname': null,
@@ -118,7 +125,8 @@ class _ProfileFormState extends State<ProfileForm> {
     );
   }
 
-  Widget _buildFormControls({@required BuildContext context}) {
+  Widget _buildFormControls(
+      {@required BuildContext context, @required ProfileFormState state}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
@@ -138,16 +146,17 @@ class _ProfileFormState extends State<ProfileForm> {
           ),
         ),
         InkWell(
-          onTap: () {
-            _submitForm();
-          },
+          onTap: state is! ProfileFormLoading ? _submitForm : null,
           child: Container(
             height: 40.0,
             width: 160.0,
             color: Color.fromRGBO(59, 70, 80, 1),
             alignment: Alignment.center,
-            child: Text('Save & Continue',
-                style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
+            child: state is ProfileFormLoading
+                ? CircularProgressIndicator()
+                : Text('Save & Continue',
+                    style:
+                        TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
           ),
         )
       ],
@@ -155,68 +164,104 @@ class _ProfileFormState extends State<ProfileForm> {
   }
 
   void _submitForm() {
+    _hideKeyPad();
     if (!_formKey.currentState.validate()) {
       return;
     }
     _formKey.currentState.save();
-    print({
-      _formData['firstname'],
-      _formData['lastname'],
-      _formData['mobilePhone'],
-      _formData['otherPhone'],
-      _formData['address']
-    });
+
+    _profileFormBloc.onProfileFormButtonPressed(
+        firstname: _formData['firstname'],
+        lastname: _formData['lastname'],
+        mobilePhone: _formData['mobilePhone'],
+        otherPhone: _formData['otherPhone'],
+        address: _formData['address']);
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildPageContent({@required ProfileFormState state}) {
     double _deviceWidth = MediaQuery.of(context).size.width;
     double _targetWidth = _deviceWidth > 550.0 ? 500.0 : _deviceWidth * .90;
 
-    return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('assets/images/auth_bg.jpg'),
-          fit: BoxFit.cover,
-          colorFilter:
-              ColorFilter.mode(Colors.black.withOpacity(.5), BlendMode.darken),
+    return GestureDetector(
+      onTap: _hideKeyPad,
+      child: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/auth_bg.jpg'),
+            fit: BoxFit.cover,
+            colorFilter: ColorFilter.mode(
+                Colors.black.withOpacity(.5), BlendMode.darken),
+          ),
         ),
-      ),
-      child: Center(
-        child: SingleChildScrollView(
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 20.0),
-            width: _targetWidth,
-            child: Form(
-              key: _formKey,
-              child: Column(
-                children: <Widget>[
-                  SizedBox(height: 30.0),
-                  Text('Thank you for signing-up',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold)),
-                  SizedBox(height: 10),
-                  Text(
-                      'Complete the registration process by filling & navigating through the signup wizard.',
-                      style: TextStyle(fontSize: 16.0)),
-                  SizedBox(height: 30),
-                  _buildFirstNameTextField(),
-                  SizedBox(height: 20.0),
-                  _buildLastNameTextField(),
-                  SizedBox(height: 20.0),
-                  _buildMobilePhoneTextField(),
-                  _buildOtherPhoneTextField(),
-                  _buildAddresseTextField(),
-                  SizedBox(height: 40),
-                  _buildFormControls(context: context),
-                ],
+        child: Center(
+          child: SingleChildScrollView(
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 20.0),
+              width: _targetWidth,
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: <Widget>[
+                    SizedBox(height: 30.0),
+                    Text('Thank you for signing-up',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.bold)),
+                    SizedBox(height: 10),
+                    Text(
+                        'Complete the registration process by filling & navigating through the signup wizard.',
+                        style: TextStyle(fontSize: 16.0)),
+                    SizedBox(height: 30),
+                    _buildFirstNameTextField(),
+                    SizedBox(height: 20.0),
+                    _buildLastNameTextField(),
+                    SizedBox(height: 20.0),
+                    _buildMobilePhoneTextField(),
+                    _buildOtherPhoneTextField(),
+                    _buildAddresseTextField(),
+                    SizedBox(height: 40),
+                    _buildFormControls(context: context, state: state),
+                  ],
+                ),
               ),
             ),
           ),
         ),
       ),
+    );
+  }
+
+  void _onWidgetDidBuild(Function callback) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      callback();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ProfileFormEvent, ProfileFormState>(
+      bloc: _profileFormBloc,
+      builder: (BuildContext context, ProfileFormState state) {
+        if (state is ProfileFormSuccess) {
+          _onWidgetDidBuild(() {
+            Navigator.of(context).pushReplacementNamed('/timeline');
+          });
+        }
+
+        if (state is ProfileFormFailure) {
+          _onWidgetDidBuild(() {
+            Scaffold.of(context).showSnackBar(
+              SnackBar(
+                content: Text('${state.error}'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          });
+        }
+
+        return _buildPageContent(state: state);
+      },
     );
   }
 }

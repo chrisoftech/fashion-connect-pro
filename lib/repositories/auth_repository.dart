@@ -10,14 +10,10 @@ class AuthRepository {
   Future<bool> isAuthenticated() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
 
-    try {
-      if (pref.getString('uid') != null && pref.getString('username') != null)
-        return true;
+    if (pref.getString('uid') != null && pref.getString('username') != null)
+      return true;
 
-      return false;
-    } catch (e) {
-      throw (e);
-    }
+    return false;
   }
 
   Future<User> authenticate(
@@ -39,10 +35,14 @@ class AuthRepository {
     }
   }
 
-  Future<void> persistUser({@required User user}) async {
+  Future<void> persistUser(
+      {@required User user, @required AuthMode authMode}) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     await pref.setString('uid', user.uid);
     await pref.setString('username', user.username);
+    if (authMode == AuthMode.SignUp) {
+      await pref.setBool('has_profile', false);
+    }
   }
 
   Future<void> signout() async {
@@ -52,6 +52,16 @@ class AuthRepository {
       SharedPreferences pref = await SharedPreferences.getInstance();
       await pref.remove('uid');
       await pref.remove('username');
+
+      // remove profile data
+      await pref.setBool('has_profile', false);
+      await pref.remove('firstname');
+      await pref.remove('lastname');
+      await pref.remove('mobilePhone');
+      await pref.remove('otherPhone');
+      await pref.remove('address');
+      await pref.remove('created');
+      await pref.remove('lastUpdate');
     } catch (e) {
       throw (e);
     }

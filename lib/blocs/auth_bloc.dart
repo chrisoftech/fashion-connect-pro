@@ -15,12 +15,12 @@ class AuthUninitialized extends AuthState {
 }
 
 class AuthAuthenticated extends AuthState {
-  final AuthMode authMode;
+  final bool hasProfile;
 
-  AuthAuthenticated({@required this.authMode}) : super([authMode]);
+  AuthAuthenticated({@required this.hasProfile}) : super([hasProfile]);
 
   @override
-  String toString() => 'AuthAuthenticated { authMode: $authMode }';
+  String toString() => 'AuthAuthenticated { hasProfile: $hasProfile }';
 }
 
 class AuthUnauthenticated extends AuthState {
@@ -63,8 +63,11 @@ class AuthLoggedOut extends AuthEvent {
 // AUTH BLOC
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthRepository authRepository;
+  final ProfileRepository profileRepository;
 
-  AuthBloc({@required this.authRepository}) : assert(authRepository != null);
+  AuthBloc({@required this.authRepository, @required this.profileRepository})
+      : assert(authRepository != null),
+        assert(profileRepository != null);
 
   @override
   AuthState get initialState => AuthUninitialized();
@@ -86,9 +89,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       AuthState currentState, AuthEvent event) async* {
     if (event is AppStarted) {
       bool isAuthenticated = await authRepository.isAuthenticated();
+      bool hasProfile = await profileRepository.hasProfile();
 
       if (isAuthenticated) {
-        yield AuthAuthenticated(authMode: AuthMode.Login);
+        yield AuthAuthenticated(hasProfile: hasProfile);
       } else {
         yield AuthUnauthenticated();
       }
@@ -96,8 +100,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     if (event is AuthLoggedIn) {
       yield AuthLoading();
-      await authRepository.persistUser(user: event.user);
-      yield AuthAuthenticated(authMode: event.authMode);
+
+      await authRepository.persistUser(
+          user: event.user, authMode: event.authMode);
+
+      await profileRepository.fetchProfile();
+      bool hasProfile = await profileRepository.hasProfile();
+
+      yield AuthAuthenticated(hasProfile: hasProfile);
     }
 
     if (event is AuthLoggedOut) {
