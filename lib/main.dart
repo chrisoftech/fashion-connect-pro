@@ -72,7 +72,7 @@ class _MyAppState extends State<MyApp> {
         }
 
         if (state is AuthAuthenticated) {
-          return state.hasProfile ? TimelinePage() : ProfileFormPage();
+          return state.hasProfile ? HomePage() : ProfileFormPage();
         }
 
         if (state is AuthUnauthenticated) {
@@ -92,6 +92,7 @@ class _MyAppState extends State<MyApp> {
         debugShowCheckedModeBanner: false,
         title: 'Fashion Connect',
         theme: ThemeData(
+          fontFamily: 'QuickSand',
           brightness: Brightness.dark,
           primarySwatch: Colors.indigo,
           accentColor: Colors.yellow[700],
