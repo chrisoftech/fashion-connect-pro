@@ -7,22 +7,26 @@ class ProfileService {
   final _serverTimestamp = FieldValue.serverTimestamp();
 
   Future<DocumentSnapshot> fetchProfile({@required String uid}) {
-      return _db.collection('profile').document(uid).get();
+    return _db.collection('profile').document(uid).get();
   }
 
   Future<void> createProfile(
       {@required String uid,
+      @required String username,
       @required String firstname,
       @required String lastname,
-      @required String mobilePhone,
-      @required String otherPhone,
-      @required String address}) {
+      @required String pageTitle,
+      @required String pageDescription,
+      @required String location}) {
+    final String mobilePhone = username.replaceAll('@fashionconnect.com', '');
+
     return _db.collection('profile').document(uid).setData({
       'firstname': firstname,
       'lastname': lastname,
       'mobilePhone': mobilePhone,
-      'otherPhone': otherPhone,
-      'address': address,
+      'pageTitle': pageTitle,
+      'pageDescription': pageDescription,
+      'location': location,
       'created': _serverTimestamp,
       'lastUpdate': _serverTimestamp
     }, merge: true);

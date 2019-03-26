@@ -11,6 +11,11 @@ class ProfileRepository {
     return pref.getString('uid');
   }
 
+  Future<String> get _username async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    return pref.getString('username');
+  }
+
   Future<bool> hasProfile() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
 
@@ -34,9 +39,9 @@ class ProfileRepository {
         await pref.setBool('has_profile', true);
         await pref.setString('firstname', _profileSnap['firstname']);
         await pref.setString('lastname', _profileSnap['lastname']);
-        await pref.setString('mobilePhone', _profileSnap['mobilePhone']);
-        await pref.setString('otherPhone', _profileSnap['otherPhone']);
-        await pref.setString('address', _profileSnap['address']);
+        await pref.setString('pageTitle', _profileSnap['pageTitle']);
+        await pref.setString('pageDescription', _profileSnap['pageDescription']);
+        await pref.setString('location', _profileSnap['location']);
         await pref.setString('created', _profileSnap['created'].toString());
         await pref.setString(
             'lastUpdate', _profileSnap['lastUpdate'].toString());
@@ -46,9 +51,9 @@ class ProfileRepository {
       //     uid: uid,
       //     firstname: _profileSnap['firstname'],
       //     lastname: _profileSnap['lastname'],
-      //     mobilePhone: _profileSnap['mobilePhone'],
-      //     otherPhone: _profileSnap['otherPhone'],
-      //     address: _profileSnap['address'],
+      //     pageTitle: _profileSnap['pageTitle'],
+      //     pageDescription: _profileSnap['pageDescription'],
+      //     location: _profileSnap['location'],
       //     created: _profileSnap['created'],
       //     lastUpdate: _profileSnap['lastUpdate']);
     } catch (e) {
@@ -59,19 +64,21 @@ class ProfileRepository {
   Future<void> createProfile(
       {@required String firstname,
       @required String lastname,
-      @required String mobilePhone,
-      @required String otherPhone,
-      @required String address}) async {
+      @required String pageTitle,
+      @required String pageDescription,
+      @required String location}) async {
     try {
-      final String uid = await _uid;
+      final String uid = await _uid;  
+      final String username = await _username;  
 
       await _profileService.createProfile(
           uid: uid,
+          username: username,
           firstname: firstname,
           lastname: lastname,
-          mobilePhone: mobilePhone,
-          otherPhone: otherPhone,
-          address: address);
+          pageTitle: pageTitle,
+          pageDescription: pageDescription,
+          location: location);
     } catch (e) {
       throw (e);
     }

@@ -41,21 +41,21 @@ abstract class ProfileFormEvent extends Equatable {
 class ProfileFormButtonPressed extends ProfileFormEvent {
   final String firstname;
   final String lastname;
-  final String mobilePhone;
-  final String otherPhone;
-  final String address;
+  final String pageTitle;
+  final String pageDescription;
+  final String location;
 
   ProfileFormButtonPressed(
       {@required this.firstname,
       @required this.lastname,
-      @required this.mobilePhone,
-      @required this.otherPhone,
-      @required this.address})
-      : super([firstname, lastname, mobilePhone, otherPhone, address]);
+      @required this.pageTitle,
+      @required this.pageDescription,
+      @required this.location})
+      : super([firstname, lastname, pageTitle, pageDescription, location]);
 
   @override
   String toString() =>
-      'ProfileFormButtonPressed { firstname: $firstname, lastname: $lastname, mobilePhone: $mobilePhone, otherPhone: $otherPhone, address: $address }';
+      'ProfileFormButtonPressed { firstname: $firstname, lastname: $lastname, pageTitle: $pageTitle, pageDescription: $pageDescription, location: $location }';
 }
 
 class ProfileFormBloc extends Bloc<ProfileFormEvent, ProfileFormState> {
@@ -76,15 +76,15 @@ class ProfileFormBloc extends Bloc<ProfileFormEvent, ProfileFormState> {
   void onProfileFormButtonPressed(
       {@required String firstname,
       @required String lastname,
-      @required String mobilePhone,
-      @required String otherPhone,
-      @required String address}) {
+      @required String pageTitle,
+      @required String pageDescription,
+      @required String location}) {
     dispatch(ProfileFormButtonPressed(
         firstname: firstname,
         lastname: lastname,
-        mobilePhone: mobilePhone,
-        otherPhone: otherPhone,
-        address: address));
+        pageTitle: pageTitle,
+        pageDescription: pageDescription,
+        location: location));
   }
 
   @override
@@ -97,9 +97,9 @@ class ProfileFormBloc extends Bloc<ProfileFormEvent, ProfileFormState> {
         await profileRepository.createProfile(
           firstname: event.firstname,
           lastname: event.lastname,
-          mobilePhone: event.mobilePhone,
-          otherPhone: event.otherPhone,
-          address: event.address,
+          pageTitle: event.pageTitle,
+          pageDescription: event.pageDescription,
+          location: event.location,
         );
 
         await profileRepository.fetchProfile();

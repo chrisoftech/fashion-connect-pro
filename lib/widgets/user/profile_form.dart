@@ -20,9 +20,9 @@ class _ProfileFormState extends State<ProfileForm> {
   final Map<String, dynamic> _formData = {
     'firstname': null,
     'lastname': null,
-    'mobilePhone': null,
-    'otherPhone': null,
-    'address': null
+    'pageTitle': null,
+    'pageDescription': null,
+    'location': null
   };
 
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -73,54 +73,55 @@ class _ProfileFormState extends State<ProfileForm> {
     );
   }
 
-  Widget _buildMobilePhoneTextField() {
+  Widget _buildPageNameTextField() {
     return TextFormField(
       keyboardType: TextInputType.phone,
       maxLength: 9,
       decoration: InputDecoration(
           filled: true,
-          labelText: 'Mobile Phone',
-          prefixText: '+233 ',
-          suffixIcon: Icon(Icons.phone_android)),
+          labelText: 'Page Title',
+          hintText: 'What do you want to call this page?',
+          suffixIcon: Icon(Icons.pages)),
       validator: (String value) {
         if (value.isEmpty) {
-          return 'Mobile phone number is required!';
+          return 'Page title is required!';
         }
       },
       onSaved: (String value) {
-        _formData['mobilePhone'] = value;
+        _formData['pageTitle'] = value;
       },
     );
   }
 
-  Widget _buildOtherPhoneTextField() {
+  Widget _buildPageDescriptionTextField() {
     return TextFormField(
       keyboardType: TextInputType.phone,
       maxLength: 9,
       decoration: InputDecoration(
           filled: true,
-          labelText: 'Other Phone',
-          prefixText: '+233 ',
-          suffixIcon: Icon(Icons.local_phone)),
+          labelText: 'Page Description',
+          hintText: 'Enter short description of your page',
+          suffixIcon: Icon(Icons.description)),
       onSaved: (String value) {
-        _formData['otherPhone'] = value;
+        _formData['pageDescription'] = value;
       },
     );
   }
 
-  Widget _buildAddresseTextField() {
+  Widget _buildLocationTextField() {
     return TextFormField(
       decoration: InputDecoration(
           filled: true,
-          labelText: 'Residential Address',
+          labelText: 'Location',
           suffixIcon: Icon(Icons.location_on)),
       validator: (String value) {
         if (value.isEmpty) {
-          return 'Address is required!';
+          return 'Location is required!';
         }
       },
       onSaved: (String value) {
-        _formData['address'] = '${value[0].toUpperCase()}${value.substring(1)}';
+        _formData['location'] =
+            '${value[0].toUpperCase()}${value.substring(1)}';
       },
     );
   }
@@ -173,9 +174,9 @@ class _ProfileFormState extends State<ProfileForm> {
     _profileFormBloc.onProfileFormButtonPressed(
         firstname: _formData['firstname'],
         lastname: _formData['lastname'],
-        mobilePhone: _formData['mobilePhone'],
-        otherPhone: _formData['otherPhone'],
-        address: _formData['address']);
+        pageTitle: _formData['pageTitle'],
+        pageDescription: _formData['pageDescription'],
+        location: _formData['location']);
   }
 
   Widget _buildPageContent({@required ProfileFormState state}) {
@@ -217,9 +218,9 @@ class _ProfileFormState extends State<ProfileForm> {
                     SizedBox(height: 20.0),
                     _buildLastNameTextField(),
                     SizedBox(height: 20.0),
-                    _buildMobilePhoneTextField(),
-                    _buildOtherPhoneTextField(),
-                    _buildAddresseTextField(),
+                    _buildPageNameTextField(),
+                    _buildPageDescriptionTextField(),
+                    _buildLocationTextField(),
                     SizedBox(height: 40),
                     _buildFormControls(context: context, state: state),
                   ],
