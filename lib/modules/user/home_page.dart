@@ -1,3 +1,4 @@
+import 'package:fashion_connect/blocs/page_bloc.dart';
 import 'package:fashion_connect/utilities/utilities.dart';
 import 'package:fashion_connect/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,20 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  PageBloc _pageBloc;
+
+  @override
+  void initState() {
+    _pageBloc = PageBloc();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _pageBloc.dispose();
+    super.dispose();
+  }
+
   Widget _buildSearchInput() {
     return Container(
       height: 160.0,
@@ -96,7 +111,7 @@ class _HomePageState extends State<HomePage> {
                     RecentPosts(),
                     SizedBox(height: 10.0),
                     _buildSectionLabel(title: 'Popular Pages'),
-                    PopularPages(),
+                    PopularPages(pageBloc: _pageBloc),
                   ],
                 ),
               ),
