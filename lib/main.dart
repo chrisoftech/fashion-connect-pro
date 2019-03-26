@@ -99,6 +99,7 @@ class _MyAppState extends State<MyApp> {
         ),
         routes: <String, WidgetBuilder>{
           '/': (BuildContext context) => _buildHomePage(),
+          '/home': (BuildContext context) => HomePage(),
           '/timeline': (BuildContext context) => TimelinePage()
         },
       ),

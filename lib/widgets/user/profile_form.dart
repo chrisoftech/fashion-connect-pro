@@ -75,12 +75,10 @@ class _ProfileFormState extends State<ProfileForm> {
 
   Widget _buildPageNameTextField() {
     return TextFormField(
-      keyboardType: TextInputType.phone,
-      maxLength: 9,
       decoration: InputDecoration(
           filled: true,
           labelText: 'Page Title',
-          hintText: 'What do you want to call this page?',
+          hintText: 'What would you call this page?',
           suffixIcon: Icon(Icons.pages)),
       validator: (String value) {
         if (value.isEmpty) {
@@ -95,12 +93,10 @@ class _ProfileFormState extends State<ProfileForm> {
 
   Widget _buildPageDescriptionTextField() {
     return TextFormField(
-      keyboardType: TextInputType.phone,
-      maxLength: 9,
       decoration: InputDecoration(
           filled: true,
           labelText: 'Page Description',
-          hintText: 'Enter short description of your page',
+          hintText: 'Enter short description of page',
           suffixIcon: Icon(Icons.description)),
       onSaved: (String value) {
         _formData['pageDescription'] = value;
@@ -246,7 +242,7 @@ class _ProfileFormState extends State<ProfileForm> {
       builder: (BuildContext context, ProfileFormState state) {
         if (state is ProfileFormSuccess) {
           _onWidgetDidBuild(() {
-            Navigator.of(context).pushReplacementNamed('/timeline');
+            Navigator.of(context).pushReplacementNamed('/home');
           });
         }
 

@@ -1,3 +1,4 @@
+import 'package:fashion_connect/utilities/utilities.dart';
 import 'package:fashion_connect/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
@@ -72,6 +73,7 @@ class _HomePageState extends State<HomePage> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
       child: Scaffold(
+        drawer: SideDrawer(),
         body: CustomScrollView(
           slivers: <Widget>[
             SliverAppBar(
