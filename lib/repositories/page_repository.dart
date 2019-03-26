@@ -24,12 +24,34 @@ class PageRepository {
           uid: snap.documentID,
           pageTitle: snap.data['pageTitle'],
           pageDescription: snap.data['pageDescription'],
+          pageImageUrl: snap.data['pageImageUrl'],
           created: snap.data['created'],
           lastUpdate: snap.data['lastUpdate'],
         ));
       });
 
       return pages;
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  Future<void> fetchPage() async {
+    try {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      final String uid = await _uid;
+
+      DocumentSnapshot documentSnapshot =
+          await _pageService.fetchPage(uid: uid);
+
+      final _profileSnap = documentSnapshot.data;
+
+      if (documentSnapshot.exists) {
+        await pref.setString('pageTitle', _profileSnap['pageTitle']);
+        await pref.setString(
+            'pageDescription', _profileSnap['pageDescription']);
+        await pref.setString('pageImageUrl', _profileSnap['pageImageUrl']);
+      }
     } catch (e) {
       throw (e);
     }

@@ -41,6 +41,7 @@ class ProfileRepository {
         await pref.setString('lastname', _profileSnap['lastname']);
         await pref.setString('pageTitle', _profileSnap['pageTitle']);
         await pref.setString('pageDescription', _profileSnap['pageDescription']);
+        await pref.setString('imageUrl', _profileSnap['imageUrl']);
         await pref.setString('location', _profileSnap['location']);
         await pref.setString('created', _profileSnap['created'].toString());
         await pref.setString(

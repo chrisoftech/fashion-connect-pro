@@ -62,6 +62,11 @@ class AuthRepository {
       await pref.remove('address');
       await pref.remove('created');
       await pref.remove('lastUpdate');
+
+      // remove page data
+      await pref.remove('pageTitle');
+      await pref.remove('pageDescription');
+      await pref.remove('pageImageUrl');
     } catch (e) {
       throw (e);
     }

@@ -9,6 +9,7 @@ class Profile extends Equatable {
   final String mobilePhone;
   final Page page;
   final String location;
+  final String imageUrl;
   final dynamic created;
   final dynamic lastUpdate;
 
@@ -19,6 +20,7 @@ class Profile extends Equatable {
       @required this.mobilePhone,
       @required this.page,
       @required this.location,
+      @required this.imageUrl,
       @required this.created,
       @required this.lastUpdate})
       : super([
@@ -28,6 +30,7 @@ class Profile extends Equatable {
           mobilePhone,
           page,
           location,
+          imageUrl,
           created,
           lastUpdate
         ]);

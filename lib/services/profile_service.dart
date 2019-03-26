@@ -27,6 +27,7 @@ class ProfileService {
       'pageTitle': pageTitle,
       'pageDescription': pageDescription,
       'location': location,
+      'imageUrl': '',
       'created': _serverTimestamp,
       'lastUpdate': _serverTimestamp
     }, merge: true);
