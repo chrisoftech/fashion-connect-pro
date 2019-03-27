@@ -1,5 +1,6 @@
 import 'package:fashion_connect/blocs/blocs.dart';
 import 'package:fashion_connect/models/models.dart';
+import 'package:fashion_connect/modules/modules.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -43,9 +44,12 @@ class _PopularPagesState extends State<PopularPages> {
         Positioned(
           top: 15.0,
           left: 15.0,
-          child: CircleAvatar(
-            radius: 45.0,
-            backgroundImage: AssetImage('assets/images/temp$index.jpg'),
+          child: Hero(
+            tag: index,
+            child: CircleAvatar(
+              radius: 45.0,
+              backgroundImage: AssetImage('assets/images/temp$index.jpg'),
+            ),
           ),
         )
       ],
@@ -99,58 +103,66 @@ class _PopularPagesState extends State<PopularPages> {
 
     final _pageDescriptionContentWidth = _contentWidth - 220.0;
 
-    return Column(
-      children: <Widget>[
-        Card(
-          child: Container(
-            height: 150.0,
-            width: _contentWidth,
-            child: Row(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(left: 20.0),
-                  child: _buildPageImage(index: 4),
-                ),
-                SizedBox(width: 20.0),
-                Column(
-                  children: <Widget>[
-                    Container(
-                      width: _pageDescriptionContentWidth,
-                      padding: EdgeInsets.symmetric(vertical: 20.0),
-                      child: _buildPageTitleRow(page: page),
-                    ),
-                    Container(
-                      width: _pageDescriptionContentWidth,
-                      child: _buildPageDescription(page: page),
-                    ),
-                    Container(
-                      width: _pageDescriptionContentWidth,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          Icon(
-                            Icons.favorite_border,
-                            color: Theme.of(context).backgroundColor,
-                            size: 15.0,
-                          ),
-                          SizedBox(width: 5.0),
-                          Text(
-                            '1K',
-                            style: TextStyle(
-                              color: Theme.of(context).accentColor,
-                            ),
-                          ),
-                        ],
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => PageProfilePage(index: 3)));
+      },
+      child: Column(
+        children: <Widget>[
+          Card(
+            child: Container(
+              height: 150.0,
+              width: _contentWidth,
+              child: Row(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20.0),
+                    child: _buildPageImage(index: 3),
+                  ),
+                  SizedBox(width: 20.0),
+                  Column(
+                    children: <Widget>[
+                      Container(
+                        width: _pageDescriptionContentWidth,
+                        padding: EdgeInsets.symmetric(vertical: 20.0),
+                        child: _buildPageTitleRow(page: page),
                       ),
-                    ),
-                  ],
-                )
-              ],
+                      Container(
+                        width: _pageDescriptionContentWidth,
+                        child: _buildPageDescription(page: page),
+                      ),
+                      Container(
+                        width: _pageDescriptionContentWidth,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            Icon(
+                              Icons.favorite_border,
+                              color: Theme.of(context).backgroundColor,
+                              size: 15.0,
+                            ),
+                            SizedBox(width: 5.0),
+                            Text(
+                              '1K',
+                              style: TextStyle(
+                                color: Theme.of(context).accentColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
             ),
           ),
-        ),
-        SizedBox(height: 10.0)
-      ],
+          SizedBox(height: 10.0)
+        ],
+      ),
     );
   }
 
