@@ -4,6 +4,7 @@ export 'page_profile/page_profile.dart';
 
 export 'popular_pages/popular_pages.dart';
 
+export 'post/post_form.dart';
 export 'post/posts.dart';
 export 'post/post_item.dart';
 
