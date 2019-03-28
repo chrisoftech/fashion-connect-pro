@@ -122,7 +122,7 @@ class PostItem extends StatelessWidget {
 
     Widget _buildPostItem({@required String post}) {
       final _deviceWidth = MediaQuery.of(context).size.width;
-      final _contentWidth = _deviceWidth > 400.0 ? 400.0 : _deviceWidth;
+      final _contentWidth = _deviceWidth > 400.0 ? 450.0 : _deviceWidth;
 
       return Column(
         children: <Widget>[
