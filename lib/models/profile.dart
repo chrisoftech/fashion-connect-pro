@@ -2,6 +2,12 @@ import 'package:equatable/equatable.dart';
 import 'package:fashion_connect/models/models.dart';
 import 'package:meta/meta.dart';
 
+enum ProfileTabMode {
+  Timeline,
+  Gallery,
+  Profile,
+}
+
 class Profile extends Equatable {
   final String uid;
   final String firstname;

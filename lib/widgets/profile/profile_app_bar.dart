@@ -1,3 +1,4 @@
+import 'package:fashion_connect/models/models.dart';
 import 'package:fashion_connect/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 

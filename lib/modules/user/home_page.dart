@@ -3,6 +3,11 @@ import 'package:fashion_connect/utilities/utilities.dart';
 import 'package:fashion_connect/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
+enum SectionLabelAction {
+  Timeline,
+  PopularPages,
+}
+
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
@@ -52,7 +57,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildSectionLabel({@required String title, bool showAction = true}) {
+  Widget _buildSectionLabel(
+      {@required String title, @required SectionLabelAction action}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
@@ -66,19 +72,17 @@ class _HomePageState extends State<HomePage> {
                 fontWeight: FontWeight.w900),
           ),
         ),
-        !showAction
-            ? Container()
-            : InkWell(
-                onTap: () {},
-                child: Container(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Text(
-                    'Show All',
-                    style: TextStyle(
-                        color: Theme.of(context).accentColor, fontSize: 20.0),
-                  ),
-                ),
-              )
+        InkWell(
+          onTap: () {},
+          child: Container(
+            padding: const EdgeInsets.all(20.0),
+            child: Text(
+              action == SectionLabelAction.Timeline ? 'Timeline' : 'Show All',
+              style: TextStyle(
+                  color: Theme.of(context).accentColor, fontSize: 20.0),
+            ),
+          ),
+        )
       ],
     );
   }
@@ -107,10 +111,13 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   children: <Widget>[
                     _buildSectionLabel(
-                        title: 'Recent Posts', showAction: false),
+                        title: 'Recent Posts',
+                        action: SectionLabelAction.Timeline),
                     RecentPosts(),
                     SizedBox(height: 10.0),
-                    _buildSectionLabel(title: 'Popular Pages'),
+                    _buildSectionLabel(
+                        title: 'Popular Pages',
+                        action: SectionLabelAction.PopularPages),
                     PopularPages(pageBloc: _pageBloc),
                   ],
                 ),
