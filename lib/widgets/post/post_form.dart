@@ -248,7 +248,7 @@ class _PostFormState extends State<PostForm> {
           FocusScope.of(context).requestFocus(FocusNode());
         },
         child: Container(
-          height: 700.0,
+          height: 600.0,
           child: CustomScrollView(
             slivers: <Widget>[
               SliverAppBar(

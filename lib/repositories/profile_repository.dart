@@ -20,7 +20,7 @@ class ProfileRepository {
   Future<bool> hasProfile() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
 
-    if (pref.getBool('has_profile')) return true;
+    if (pref.getBool('has_profile') ?? false) return true;
 
     return false;
   }
