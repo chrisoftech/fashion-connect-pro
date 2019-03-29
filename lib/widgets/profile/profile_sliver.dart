@@ -17,38 +17,66 @@ class _ProfileSliverState extends State<ProfileSliver> {
   Profile get _profile => widget.profile;
 
   Widget _buildBackgroundImage() {
-    return Container(
-      width: double.infinity,
-      child: _profile.page.pageImageUrl.isNotEmpty
-          ? FadeInImage(
-              placeholder: AssetImage('assets/avatars/bg-avatar.png'),
-              image: NetworkImage('${_profile.page.pageImageUrl}'),
-            )
-          : Image.asset('assets/avatars/bg-avatar.png', fit: BoxFit.cover),
+    return InkWell(
+      onTap: () {
+        _openSelectImageDialog(
+            imageUrl: _profile.page.pageImageUrl.isNotEmpty
+                ? '${_profile.page.pageImageUrl}'
+                : '',
+            isProfileImage: false);
+      },
+      child: Container(
+        width: double.infinity,
+        child: _profile.page.pageImageUrl.isNotEmpty
+            ? FadeInImage(
+                fit: BoxFit.cover,
+                placeholder: AssetImage('assets/avatars/bg-avatar.png'),
+                image: NetworkImage('${_profile.page.pageImageUrl}'),
+              )
+            : Image.asset('assets/avatars/bg-avatar.png', fit: BoxFit.cover),
+      ),
     );
   }
 
+  void _openSelectImageDialog(
+      {@required String imageUrl, @required bool isProfileImage}) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return ProfileImageDialog(
+              imageUrl: imageUrl, isProfileImage: isProfileImage);
+        });
+  }
+
   Widget _buildProfileImage() {
-    return Container(
-      height: 60.0,
-      width: 60.0,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(30.0),
-        border: Border.all(width: 2.0, color: Colors.white),
-      ),
-      child: _profile.imageUrl.isNotEmpty
-          ? ClipRRect(
-              borderRadius: BorderRadius.circular(45.0),
-              child: FadeInImage(
-                placeholder: AssetImage('assets/loader/loader.gif'),
-                image: NetworkImage('${_profile.imageUrl}'),
+    return InkWell(
+      onTap: () {
+        _openSelectImageDialog(
+            imageUrl: _profile.imageUrl.isNotEmpty ? _profile.imageUrl : '',
+            isProfileImage: true);
+      },
+      child: Container(
+        height: 60.0,
+        width: 60.0,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(30.0),
+          border: Border.all(width: 2.0, color: Colors.white),
+        ),
+        child: _profile.imageUrl.isNotEmpty
+            ? ClipRRect(
+                borderRadius: BorderRadius.circular(45.0),
+                child: FadeInImage(
+                  fit: BoxFit.cover,
+                  placeholder: AssetImage('assets/loader/loader.gif'),
+                  image: NetworkImage('${_profile.imageUrl}'),
+                ),
+              )
+            : ClipRRect(
+                borderRadius: BorderRadius.circular(30.0),
+                child: Image.asset('assets/avatars/ps-avatar.png',
+                    fit: BoxFit.cover),
               ),
-            )
-          : ClipRRect(
-              borderRadius: BorderRadius.circular(30.0),
-              child: Image.asset('assets/avatars/ps-avatar.png',
-                  fit: BoxFit.cover),
-            ),
+      ),
     );
   }
 
