@@ -108,7 +108,7 @@ class _PopularPagesState extends State<PopularPages> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (BuildContext context) => PageProfilePage(index: 3)));
+                builder: (BuildContext context) => PageProfilePage()));
       },
       child: Column(
         children: <Widget>[

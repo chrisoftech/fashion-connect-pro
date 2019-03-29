@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 
 class PostItem extends StatelessWidget {
-  final int index;
   final String post;
 
-  const PostItem({Key key, @required this.index, @required this.post})
-      : super(key: key);
+  const PostItem({Key key, @required this.post}) : super(key: key);
 
-  int get _index => index;
   String get _post => post;
 
   @override
@@ -133,8 +130,7 @@ class PostItem extends StatelessWidget {
                 children: <Widget>[
                   ListTile(
                     leading: CircleAvatar(
-                        backgroundImage:
-                            AssetImage('assets/images/temp$_index.jpg')),
+                        backgroundImage: AssetImage('assets/images/temp3.jpg')),
                     title: Text('John Doe'),
                     subtitle: Text('March 28, Thursday 2019'),
                     trailing: IconButton(

@@ -3,9 +3,9 @@ import 'package:fashion_connect/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
 class ProfileSliver extends StatefulWidget {
-  final int index;
+  final ProfileMode profileMode;
 
-  const ProfileSliver({Key key, @required this.index}) : super(key: key);
+  const ProfileSliver({Key key, @required this.profileMode}) : super(key: key);
 
   @override
   _ProfileSliverState createState() => _ProfileSliverState();
@@ -14,17 +14,14 @@ class ProfileSliver extends StatefulWidget {
 class _ProfileSliverState extends State<ProfileSliver> {
   ProfileTabMode _profileTabMode = ProfileTabMode.Timeline;
 
-  int get _index => widget.index;
+  ProfileMode get _profileMode => widget.profileMode;
 
   Widget _buildBackgroundImage() {
-    return Hero(
-      tag: _index,
-      child: Container(
-        width: double.infinity,
-        child: Image.asset(
-          'assets/images/temp$_index.jpg',
-          fit: BoxFit.cover,
-        ),
+    return Container(
+      width: double.infinity,
+      child: Image.asset(
+        'assets/images/temp3.jpg',
+        fit: BoxFit.cover,
       ),
     );
   }
@@ -211,9 +208,7 @@ class _ProfileSliverState extends State<ProfileSliver> {
           ),
         ),
         SliverToBoxAdapter(
-          child: Posts(
-            index: _index,
-          ),
+          child: Posts(),
         )
       ],
     );
