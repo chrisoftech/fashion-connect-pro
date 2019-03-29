@@ -1,4 +1,7 @@
+import 'package:fashion_connect/utilities/utilities.dart';
 import 'package:flutter/material.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:flutter/services.dart';
 
 class ProfileImageDialog extends StatefulWidget {
   final String imageUrl;
@@ -13,8 +16,38 @@ class ProfileImageDialog extends StatefulWidget {
 }
 
 class _ProfileImageDialogState extends State<ProfileImageDialog> {
+  List<Asset> _images = List<Asset>();
+  String _error;
+
   String get _imageUrl => widget.imageUrl ?? '';
   bool get _isProfileImage => widget.isProfileImage ?? false;
+
+  Future<void> _loadAssets() async {
+    setState(() {
+      _images = List<Asset>();
+    });
+
+    List<Asset> resultList;
+    String error;
+
+    try {
+      resultList = await MultiImagePicker.pickImages(
+        maxImages: 1,
+      );
+    } on PlatformException catch (e) {
+      error = e.message;
+    }
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
+
+    setState(() {
+      _images = resultList;
+      if (error == null) _error = 'No Error Dectected';
+    });
+  }
 
   Widget _buildPostDialogCloseControl() {
     return Positioned(
@@ -46,15 +79,20 @@ class _ProfileImageDialogState extends State<ProfileImageDialog> {
   Widget _buildPostImage() {
     return Container(
       width: double.infinity,
-      child: _imageUrl.isNotEmpty
-          ? FadeInImage(
-              fit: BoxFit.cover,
-              placeholder: AssetImage('assets/loader/loader.gif'),
-              image: NetworkImage('$_imageUrl'),
+      child: _images.length > 0
+          ? Column(
+              children: <Widget>[Expanded(child: AssetView(0, _images[0]))],
             )
-          : Image.asset('assets/avatars/avatar.png',
-              fit: BoxFit.cover,
-            ),
+          : _imageUrl.isNotEmpty
+              ? FadeInImage(
+                  fit: BoxFit.cover,
+                  placeholder: AssetImage('assets/loader/loader.gif'),
+                  image: NetworkImage('$_imageUrl'),
+                )
+              : Image.asset(
+                  'assets/avatars/avatar.png',
+                  fit: BoxFit.cover,
+                ),
     );
   }
 
@@ -73,9 +111,7 @@ class _ProfileImageDialogState extends State<ProfileImageDialog> {
             color: Theme.of(context).accentColor,
             size: 30.0,
           ),
-          onPressed: () {
-            print('Add image');
-          },
+          onPressed: _loadAssets,
         ));
   }
 
