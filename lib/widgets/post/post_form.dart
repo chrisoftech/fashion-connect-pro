@@ -46,16 +46,22 @@ class _PostFormState extends State<PostForm> {
   }
 
   Widget _buildPostProfileImage() {
-    return Container(
-      height: 60.0,
-      width: 60.0,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(30.0),
-        border: Border.all(width: 2.0, color: Colors.grey),
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(30.0),
-        child: Image.asset('assets/images/temp3.jpg', fit: BoxFit.cover),
+    return InkWell(
+      onTap: () {
+        Navigator.of(context).pop();
+        Navigator.of(context).pushNamed('/profile');
+      },
+      child: Container(
+        height: 60.0,
+        width: 60.0,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(30.0),
+          border: Border.all(width: 2.0, color: Colors.grey),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(30.0),
+          child: Image.asset('assets/images/temp3.jpg', fit: BoxFit.cover),
+        ),
       ),
     );
   }

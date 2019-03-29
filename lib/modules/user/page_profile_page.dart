@@ -16,7 +16,7 @@ class _PageProfilePageState extends State<PageProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: PageProfile(index: _index),
+      body: ProfileSliver(index: _index),
     );
   }
 }

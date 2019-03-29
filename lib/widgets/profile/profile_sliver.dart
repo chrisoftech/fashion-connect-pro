@@ -2,16 +2,16 @@ import 'package:fashion_connect/models/models.dart';
 import 'package:fashion_connect/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
-class ProfileAppBar extends StatefulWidget {
+class ProfileSliver extends StatefulWidget {
   final int index;
 
-  const ProfileAppBar({Key key, @required this.index}) : super(key: key);
+  const ProfileSliver({Key key, @required this.index}) : super(key: key);
 
   @override
-  _ProfileAppBarState createState() => _ProfileAppBarState();
+  _ProfileSliverState createState() => _ProfileSliverState();
 }
 
-class _ProfileAppBarState extends State<ProfileAppBar> {
+class _ProfileSliverState extends State<ProfileSliver> {
   ProfileTabMode _profileTabMode = ProfileTabMode.Timeline;
 
   int get _index => widget.index;

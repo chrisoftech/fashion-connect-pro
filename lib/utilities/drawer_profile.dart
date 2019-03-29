@@ -5,14 +5,22 @@ class DrawerProfile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        ClipRRect(
+        Container(
+          height: 120.0,
+          width: 120.0,
+          decoration: BoxDecoration(
+              border: Border.all(width: 2.0, color: Colors.white),
+              borderRadius: BorderRadius.circular(60.0)),
+          child: ClipRRect(
             borderRadius: BorderRadius.circular(60.0),
             child: Image.asset(
               'assets/images/temp4.jpg',
               fit: BoxFit.cover,
               height: 120.0,
               width: 120.0,
-            )),
+            ),
+          ),
+        ),
         SizedBox(height: 20.0),
         Text('example@gmail.com',
             style: TextStyle(
@@ -27,7 +35,10 @@ class DrawerProfile extends StatelessWidget {
                 fontSize: 16.0,
                 fontWeight: FontWeight.bold),
           ),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.of(context).pop();
+            Navigator.of(context).pushNamed('/profile');
+          },
         ),
         Divider(height: 20.0),
       ],
