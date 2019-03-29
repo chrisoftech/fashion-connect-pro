@@ -22,7 +22,7 @@ class _PopularPagesState extends State<PopularPages> {
     super.initState();
   }
 
-  Widget _buildPageImage({@required int index}) {
+  Widget _buildPageImage({@required Profile profile}) {
     return Stack(
       children: <Widget>[
         Container(
@@ -44,9 +44,26 @@ class _PopularPagesState extends State<PopularPages> {
         Positioned(
           top: 15.0,
           left: 15.0,
-          child: CircleAvatar(
-            radius: 45.0,
-            backgroundImage: AssetImage('assets/images/temp$index.jpg'),
+          child: Container(
+            height: 90.0,
+            width: 90.0,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(45.0),
+              border: Border.all(width: 2.0, color: Colors.white),
+            ),
+            child: profile.page.pageImageUrl.isNotEmpty
+                ? ClipRRect(
+                    borderRadius: BorderRadius.circular(45.0),
+                    child: FadeInImage(
+                      placeholder: AssetImage('assets/loader/loader.gif'),
+                      image: NetworkImage('${profile.page.pageImageUrl}'),
+                    ),
+                  )
+                : ClipRRect(
+                    borderRadius: BorderRadius.circular(45.0),
+                    child: Image.asset('assets/avatars/bg-avatar.png',
+                        fit: BoxFit.cover),
+                  ),
           ),
         )
       ],
@@ -105,19 +122,20 @@ class _PopularPagesState extends State<PopularPages> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (BuildContext context) => PageProfilePage()));
+                builder: (BuildContext context) =>
+                    PageProfilePage(profile: profile)));
       },
       child: Column(
         children: <Widget>[
           Card(
             child: Container(
-              height: 150.0,
+              height: 130.0,
               width: _contentWidth,
               child: Row(
                 children: <Widget>[
                   Padding(
                     padding: const EdgeInsets.only(left: 20.0),
-                    child: _buildPageImage(index: 3),
+                    child: _buildPageImage(profile: profile),
                   ),
                   SizedBox(width: 20.0),
                   Column(

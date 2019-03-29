@@ -3,9 +3,9 @@ import 'package:fashion_connect/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
 class ProfileSliver extends StatefulWidget {
-  final ProfileMode profileMode;
+  final Profile profile;
 
-  const ProfileSliver({Key key, @required this.profileMode}) : super(key: key);
+  const ProfileSliver({Key key, @required this.profile}) : super(key: key);
 
   @override
   _ProfileSliverState createState() => _ProfileSliverState();
@@ -14,20 +14,17 @@ class ProfileSliver extends StatefulWidget {
 class _ProfileSliverState extends State<ProfileSliver> {
   ProfileTabMode _profileTabMode = ProfileTabMode.Timeline;
 
-  ProfileMode get _profileMode => widget.profileMode;
-  
-  @override
-  void didUpdateWidget(Widget oldWidget) {
-    super.didUpdateWidget(oldWidget);
-  }
+  Profile get _profile => widget.profile;
 
   Widget _buildBackgroundImage() {
     return Container(
       width: double.infinity,
-      child: Image.asset(
-        'assets/images/temp3.jpg',
-        fit: BoxFit.cover,
-      ),
+      child: _profile.page.pageImageUrl.isNotEmpty
+          ? FadeInImage(
+              placeholder: AssetImage('assets/avatars/bg-avatar.png'),
+              image: NetworkImage('${_profile.page.pageImageUrl}'),
+            )
+          : Image.asset('assets/avatars/bg-avatar.png', fit: BoxFit.cover),
     );
   }
 
@@ -37,12 +34,21 @@ class _ProfileSliverState extends State<ProfileSliver> {
       width: 60.0,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(30.0),
-        border: Border.all(width: 2.0, color: Colors.grey),
+        border: Border.all(width: 2.0, color: Colors.white),
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(30.0),
-        child: Image.asset('assets/images/temp3.jpg', fit: BoxFit.cover),
-      ),
+      child: _profile.imageUrl.isNotEmpty
+          ? ClipRRect(
+              borderRadius: BorderRadius.circular(45.0),
+              child: FadeInImage(
+                placeholder: AssetImage('assets/loader/loader.gif'),
+                image: NetworkImage('${_profile.imageUrl}'),
+              ),
+            )
+          : ClipRRect(
+              borderRadius: BorderRadius.circular(30.0),
+              child: Image.asset('assets/avatars/ps-avatar.png',
+                  fit: BoxFit.cover),
+            ),
     );
   }
 
@@ -93,11 +99,11 @@ class _ProfileSliverState extends State<ProfileSliver> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    'John Doe',
+                    '${_profile.page.pageTitle}',
                     style: TextStyle(fontSize: 20.0),
                   ),
                   Text(
-                    'Some Description',
+                    '${_profile.page.pageDescription}',
                     style: TextStyle(fontSize: 16.0),
                   ),
                 ],
