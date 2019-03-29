@@ -10,6 +10,10 @@ class ProfileService {
     return _db.collection('profile').document(uid).get();
   }
 
+  Future<QuerySnapshot> fetchProfiles() {
+    return _db.collection('profile').getDocuments();
+  }
+
   Future<void> createProfile(
       {@required String uid,
       @required String username,
@@ -28,6 +32,7 @@ class ProfileService {
       'pageDescription': pageDescription,
       'location': location,
       'imageUrl': '',
+      'pageImageUrl': '',
       'created': _serverTimestamp,
       'lastUpdate': _serverTimestamp
     }, merge: true);

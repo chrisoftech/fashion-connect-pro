@@ -59,7 +59,6 @@ class ProfileFormButtonPressed extends ProfileFormEvent {
 
 class ProfileFormBloc extends Bloc<ProfileFormEvent, ProfileFormState> {
   final ProfileRepository profileRepository;
-  final PageRepository _pageRepository = PageRepository();
 
   ProfileFormBloc({@required this.profileRepository})
       : assert(profileRepository != null);
@@ -101,9 +100,6 @@ class ProfileFormBloc extends Bloc<ProfileFormEvent, ProfileFormState> {
           pageDescription: event.pageDescription,
           location: event.location,
         );
-
-        await _pageRepository.createPage(
-            pageTitle: event.pageTitle, pageDescription: event.pageDescription);
 
         await profileRepository.fetchProfile();
 

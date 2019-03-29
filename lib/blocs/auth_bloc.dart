@@ -64,7 +64,6 @@ class AuthLoggedOut extends AuthEvent {
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthRepository authRepository;
   final ProfileRepository profileRepository;
-  final PageRepository _pageRepository = PageRepository();
 
   AuthBloc({@required this.authRepository, @required this.profileRepository})
       : assert(authRepository != null),
@@ -106,7 +105,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           user: event.user, authMode: event.authMode);
 
       await profileRepository.fetchProfile();
-      await _pageRepository.fetchPage();
       
       bool hasProfile = await profileRepository.hasProfile();
 

@@ -15,6 +15,11 @@ class _ProfileSliverState extends State<ProfileSliver> {
   ProfileTabMode _profileTabMode = ProfileTabMode.Timeline;
 
   ProfileMode get _profileMode => widget.profileMode;
+  
+  @override
+  void didUpdateWidget(Widget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+  }
 
   Widget _buildBackgroundImage() {
     return Container(

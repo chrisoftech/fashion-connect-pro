@@ -5,20 +5,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PopularPages extends StatefulWidget {
-  final PageBloc pageBloc;
+  final ProfileBloc profileBloc;
 
-  const PopularPages({Key key, @required this.pageBloc}) : super(key: key);
+  const PopularPages({Key key, @required this.profileBloc}) : super(key: key);
 
   @override
   _PopularPagesState createState() => _PopularPagesState();
 }
 
 class _PopularPagesState extends State<PopularPages> {
-  PageBloc get _pageBloc => widget.pageBloc;
+  ProfileBloc get _pageBloc => widget.profileBloc;
 
   @override
   void initState() {
-    _pageBloc.onFetchPages();
+    _pageBloc.onFetchProfiles();
     super.initState();
   }
 
@@ -44,23 +44,20 @@ class _PopularPagesState extends State<PopularPages> {
         Positioned(
           top: 15.0,
           left: 15.0,
-          child: Hero(
-            tag: index,
-            child: CircleAvatar(
-              radius: 45.0,
-              backgroundImage: AssetImage('assets/images/temp$index.jpg'),
-            ),
+          child: CircleAvatar(
+            radius: 45.0,
+            backgroundImage: AssetImage('assets/images/temp$index.jpg'),
           ),
         )
       ],
     );
   }
 
-  Widget _buildPageTitleRow({@required Page page}) {
+  Widget _buildPageTitleRow({@required Profile profile}) {
     return Row(
       children: <Widget>[
         Expanded(
-          child: Text('${page.pageTitle}',
+          child: Text('${profile.page.pageTitle}',
               style: TextStyle(
                   color: Colors.white,
                   fontSize: 20.0,
@@ -85,8 +82,8 @@ class _PopularPagesState extends State<PopularPages> {
     );
   }
 
-  Widget _buildPageDescription({@required Page page}) {
-    final String description = '${page.pageDescription}';
+  Widget _buildPageDescription({@required Profile profile}) {
+    final String description = '${profile.page.pageDescription}';
 
     return Text(
       description.length > 50
@@ -97,7 +94,7 @@ class _PopularPagesState extends State<PopularPages> {
     );
   }
 
-  Widget _buildPopularPageItem({@required Page page}) {
+  Widget _buildPopularPageItem({@required Profile profile}) {
     final double _screenWidth = MediaQuery.of(context).size.width;
     final double _contentWidth = _screenWidth > 400.0 ? 450.0 : _screenWidth;
 
@@ -128,11 +125,11 @@ class _PopularPagesState extends State<PopularPages> {
                       Container(
                         width: _pageDescriptionContentWidth,
                         padding: EdgeInsets.symmetric(vertical: 20.0),
-                        child: _buildPageTitleRow(page: page),
+                        child: _buildPageTitleRow(profile: profile),
                       ),
                       Container(
                         width: _pageDescriptionContentWidth,
-                        child: _buildPageDescription(page: page),
+                        child: _buildPageDescription(profile: profile),
                       ),
                       Container(
                         width: _pageDescriptionContentWidth,
@@ -171,30 +168,30 @@ class _PopularPagesState extends State<PopularPages> {
     final double _screenHeight = MediaQuery.of(context).size.height;
     final double _contentHeight = _screenHeight - 250.0;
 
-    return BlocBuilder<PageEvent, PageState>(
+    return BlocBuilder<ProfileEvent, ProfileState>(
       bloc: _pageBloc,
-      builder: (BuildContext context, PageState state) {
-        if (state is PageUnitialized) {
+      builder: (BuildContext context, ProfileState state) {
+        if (state is ProfileUninitialized) {
           return Center(child: CircularProgressIndicator());
         }
 
-        if (state is PageError) {
+        if (state is ProfileError) {
           return Center(child: Text('Faild to load pages :('));
         }
 
-        if (state is PageLoaded) {
-          if (state.pages.isEmpty) {
+        if (state is ProfilesLoaded) {
+          if (state.profiles.isEmpty) {
             return Center(child: Text('No pages found :('));
           }
 
           return Container(
             height: _contentHeight,
             child: ListView.builder(
-              itemCount: state.pages.length,
+              itemCount: state.profiles.length,
               itemBuilder: (BuildContext context, int index) {
-                final Page page = state.pages[index];
+                final Profile profile = state.profiles[index];
 
-                return _buildPopularPageItem(page: page);
+                return _buildPopularPageItem(profile: profile);
               },
             ),
           );
