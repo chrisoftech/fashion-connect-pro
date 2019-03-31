@@ -4,6 +4,8 @@ import 'package:meta/meta.dart';
 
 enum ProfileMode { User, Page }
 
+enum ProfileImageSelectMode { UserImage, PageImage }
+
 enum ProfileTabMode { Timeline, Gallery, Profile }
 
 class Profile extends Equatable {

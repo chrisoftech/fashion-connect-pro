@@ -58,8 +58,8 @@ class AuthRepository {
       await pref.remove('firstname');
       await pref.remove('lastname');
       await pref.remove('mobilePhone');
-      await pref.remove('otherPhone');
-      await pref.remove('address');
+      await pref.remove('imageUrl');
+      await pref.remove('location');
       await pref.remove('created');
       await pref.remove('lastUpdate');
 

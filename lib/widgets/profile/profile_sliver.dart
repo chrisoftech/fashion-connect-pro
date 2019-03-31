@@ -23,7 +23,7 @@ class _ProfileSliverState extends State<ProfileSliver> {
             imageUrl: _profile.page.pageImageUrl.isNotEmpty
                 ? '${_profile.page.pageImageUrl}'
                 : '',
-            isProfileImage: false);
+            profileImageSelectMode: ProfileImageSelectMode.PageImage);
       },
       child: Container(
         width: double.infinity,
@@ -39,12 +39,12 @@ class _ProfileSliverState extends State<ProfileSliver> {
   }
 
   void _openSelectImageDialog(
-      {@required String imageUrl, @required bool isProfileImage}) {
+      {@required String imageUrl, @required ProfileImageSelectMode profileImageSelectMode}) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return ProfileImageDialog(
-              imageUrl: imageUrl, isProfileImage: isProfileImage);
+              imageUrl: imageUrl, profileImageSelectMode: profileImageSelectMode);
         });
   }
 
@@ -53,7 +53,7 @@ class _ProfileSliverState extends State<ProfileSliver> {
       onTap: () {
         _openSelectImageDialog(
             imageUrl: _profile.imageUrl.isNotEmpty ? _profile.imageUrl : '',
-            isProfileImage: true);
+            profileImageSelectMode: ProfileImageSelectMode.UserImage);
       },
       child: Container(
         height: 60.0,

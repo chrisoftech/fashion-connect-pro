@@ -1,3 +1,4 @@
+import 'package:fashion_connect/models/models.dart';
 import 'package:fashion_connect/utilities/utilities.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
@@ -5,10 +6,10 @@ import 'package:flutter/services.dart';
 
 class ProfileImageDialog extends StatefulWidget {
   final String imageUrl;
-  final bool isProfileImage;
+  final ProfileImageSelectMode profileImageSelectMode;
 
   const ProfileImageDialog(
-      {Key key, @required this.imageUrl, @required this.isProfileImage})
+      {Key key, @required this.imageUrl, @required this.profileImageSelectMode})
       : super(key: key);
 
   @override
@@ -20,7 +21,8 @@ class _ProfileImageDialogState extends State<ProfileImageDialog> {
   String _error;
 
   String get _imageUrl => widget.imageUrl ?? '';
-  bool get _isProfileImage => widget.isProfileImage ?? false;
+  ProfileImageSelectMode get _profileImageSelectMode =>
+      widget.profileImageSelectMode ?? false; // select mode for profile image
 
   Future<void> _loadAssets() async {
     setState(() {
