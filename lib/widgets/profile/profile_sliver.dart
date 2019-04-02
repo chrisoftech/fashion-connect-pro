@@ -12,6 +12,7 @@ class ProfileSliver extends StatefulWidget {
 }
 
 class _ProfileSliverState extends State<ProfileSliver> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   ProfileTabMode _profileTabMode = ProfileTabMode.Timeline;
 
   Profile get _profile => widget.profile;
@@ -39,12 +40,17 @@ class _ProfileSliverState extends State<ProfileSliver> {
   }
 
   void _openSelectImageDialog(
-      {@required String imageUrl, @required ProfileImageSelectMode profileImageSelectMode}) {
+      {@required String imageUrl,
+      @required ProfileImageSelectMode profileImageSelectMode}) {
     showDialog(
         context: context,
+        barrierDismissible: false,
         builder: (BuildContext context) {
           return ProfileImageDialog(
-              imageUrl: imageUrl, profileImageSelectMode: profileImageSelectMode);
+              imageUrl: imageUrl,
+              profile: _profile,
+              scaffoldKey: _scaffoldKey,
+              profileImageSelectMode: profileImageSelectMode);
         });
   }
 
@@ -80,26 +86,37 @@ class _ProfileSliverState extends State<ProfileSliver> {
     );
   }
 
-  Widget _buildFavoriteToggle() {
-    return Row(
-      children: <Widget>[
-        IconButton(
-          icon: Icon(
-            Icons.favorite_border,
-            color: Colors.red,
+  Widget _buildSliverAction() {
+    return Container(
+      alignment: Alignment.center,
+      margin: EdgeInsets.only(right: 10.0),
+      padding: EdgeInsets.only(right: 10.0),
+      decoration: BoxDecoration(
+        color: Theme.of(context).primaryColorDark,
+        borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+            bottomRight: Radius.circular(20.0)),
+      ),
+      child: Row(
+        children: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.favorite_border,
+              color: Colors.red,
+            ),
+            onPressed: () {
+              print('Favorite');
+            },
           ),
-          onPressed: () {
-            print('Favorite');
-          },
-        ),
-        Text(
-          '10k',
-          style: TextStyle(
-            color: Theme.of(context).accentColor,
-            fontSize: 20.0,
-          ),
-        )
-      ],
+          Text(
+            '10k',
+            style: TextStyle(
+              color: Theme.of(context).accentColor,
+              fontSize: 20.0,
+            ),
+          )
+        ],
+      ),
     );
   }
 
@@ -137,16 +154,6 @@ class _ProfileSliverState extends State<ProfileSliver> {
                 ],
               ),
             ),
-            Container(
-                alignment: Alignment.center,
-                padding: EdgeInsets.only(right: 5.0),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColorDark,
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20.0),
-                      bottomLeft: Radius.circular(20.0)),
-                ),
-                child: _buildFavoriteToggle()),
           ],
         ),
       ),
@@ -235,21 +242,30 @@ class _ProfileSliverState extends State<ProfileSliver> {
 
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
-      slivers: <Widget>[
-        SliverAppBar(
-          pinned: true,
-          expandedHeight: 300.0,
-          flexibleSpace: _buildProfileImageStack(),
-          bottom: PreferredSize(
-            preferredSize: Size.fromHeight(150.0),
-            child: _buildTabs(),
-          ),
+    return GestureDetector(
+      onTap: () {
+        _scaffoldKey.currentState.hideCurrentSnackBar();
+      },
+      child: Scaffold(
+        key: _scaffoldKey,
+        body: CustomScrollView(
+          slivers: <Widget>[
+            SliverAppBar(
+              pinned: true,
+              expandedHeight: 300.0,
+              actions: <Widget>[_buildSliverAction()],
+              flexibleSpace: _buildProfileImageStack(),
+              bottom: PreferredSize(
+                preferredSize: Size.fromHeight(150.0),
+                child: _buildTabs(),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Posts(),
+            )
+          ],
         ),
-        SliverToBoxAdapter(
-          child: Posts(),
-        )
-      ],
+      ),
     );
   }
 }

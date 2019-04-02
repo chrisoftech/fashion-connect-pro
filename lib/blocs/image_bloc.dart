@@ -10,7 +10,7 @@ abstract class ImageUploadState extends Equatable {
   ImageUploadState([List props = const []]) : super(props);
 }
 
-class ImageUploadIntial extends ImageUploadState {
+class ImageUploadInitial extends ImageUploadState {
   @override
   String toString() => 'ImageUploadIntial';
 }
@@ -43,9 +43,14 @@ abstract class ImageUploadEvent extends Equatable {
   ImageUploadEvent([List props = const []]) : super(props);
 }
 
+class ImageUploadReset extends ImageUploadEvent {
+  @override
+  String toString() => 'ImageUploadReset';
+}
+
 class ImageUploadButtonPressed extends ImageUploadEvent {
   final String uid;
-  final Asset asset;
+  final List<Asset> asset;
   final ProfileImageSelectMode profileImageSelectMode;
 
   ImageUploadButtonPressed(
@@ -61,16 +66,34 @@ class ImageUploadBloc extends Bloc<ImageUploadEvent, ImageUploadState> {
   ImageUploadBloc({@required this.imageRepository});
 
   @override
-  ImageUploadState get initialState => ImageUploadIntial();
+  ImageUploadState get initialState => ImageUploadInitial();
+  
+  void onImageUploadReset() {
+    dispatch(ImageUploadReset());
+  }
+
+  void onImageUploadButtonPressed(
+      {@required String uid,
+      @required List<Asset> asset,
+      @required ProfileImageSelectMode profileImageSelectMode}) {
+    dispatch(ImageUploadButtonPressed(
+        uid: uid,
+        asset: asset,
+        profileImageSelectMode: profileImageSelectMode));
+  }
 
   @override
   Stream<ImageUploadState> mapEventToState(
       ImageUploadState currentState, ImageUploadEvent event) async* {
+    if (event is ImageUploadReset) {
+      yield ImageUploadInitial();
+    }
+
     if (event is ImageUploadButtonPressed) {
       yield ImageUploadLoading();
 
       try {
-        final String imageUrl = await imageRepository.uploadImage(
+        final List<String> imageUrl = await imageRepository.uploadImage(
             uid: event.uid,
             asset: event.asset,
             profileImageSelectMode: event.profileImageSelectMode);
@@ -78,6 +101,7 @@ class ImageUploadBloc extends Bloc<ImageUploadEvent, ImageUploadState> {
         await imageRepository.persistImageUrl(
             imageUrl: imageUrl,
             profileImageSelectMode: event.profileImageSelectMode);
+        yield ImageUploadSuccess(imageUrl: imageUrl);
       } catch (e) {
         print('Bloc Upload error ${e.toString()}');
         yield ImageUploadFailure(error: e.toString());

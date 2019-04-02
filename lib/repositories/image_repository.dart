@@ -8,22 +8,22 @@ import 'package:uuid/uuid.dart';
 class ImageRepository {
   final _imageService = ImageService();
 
-  Future<String> uploadImage(
+  Future<List<String>> uploadImage(
       {@required String uid,
       @required ProfileImageSelectMode profileImageSelectMode,
-      @required Asset asset}) async {
+      @required List<Asset> asset}) async {
     try {
-      final uuid = new Uuid();
+      final uuid = Uuid();
       final String fileLocation =
           profileImageSelectMode == ProfileImageSelectMode.UserImage
               ? 'user'
               : 'page';
-      final String fileName = '$uid/$fileLocation/$uuid';
+      final String fileName = '$uid/$fileLocation/${uuid.v1()}';
 
-      final String imageUrl = await _imageService.uploadImage(
-          fileName: fileName, asset: asset);
+      final List<String> imageUrl =
+          await _imageService.uploadImage(fileName: fileName, assets: asset);
 
-      print('Image uploaded $imageUrl');
+      print('Image uploaded ${imageUrl.toList()}');
       return imageUrl;
     } catch (e) {
       throw (e);
@@ -31,12 +31,12 @@ class ImageRepository {
   }
 
   Future<void> persistImageUrl(
-      {@required String imageUrl,
+      {@required List<String> imageUrl,
       @required ProfileImageSelectMode profileImageSelectMode}) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
 
     profileImageSelectMode == ProfileImageSelectMode.UserImage
-        ? await pref.setString('imageUrl', imageUrl)
-        : await pref.setString('pageImageUrl', imageUrl);
+        ? await pref.setString('imageUrl', imageUrl[0])
+        : await pref.setString('pageImageUrl', imageUrl[0]);
   }
 }

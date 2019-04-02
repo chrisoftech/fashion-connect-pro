@@ -5,37 +5,48 @@ import 'package:meta/meta.dart';
 import 'package:multi_image_picker/asset.dart';
 
 class ImageService {
-  Future<String> uploadImage({@required String fileName, @required Asset asset}) async {
-    String photoUrl = '';
+  Future<List<String>> uploadImage(
+      {@required String fileName, @required List<Asset> assets}) async {
+    List<String> uploadUrls = [];
 
-    ByteData byteData = await asset.requestOriginal();
-    List<int> imageData = byteData.buffer.asUint8List();
+    await Future.wait(
+            assets.map((Asset asset) async {
+              ByteData byteData = await asset.requestOriginal();
+              List<int> imageData = byteData.buffer.asUint8List();
 
-    StorageReference reference = FirebaseStorage.instance.ref().child(fileName);
-    StorageUploadTask uploadTask = reference.putData(imageData);
-    StorageTaskSnapshot storageTaskSnapshot;
+              StorageReference reference =
+                  FirebaseStorage.instance.ref().child(fileName);
+              StorageUploadTask uploadTask = reference.putData(imageData);
+              StorageTaskSnapshot storageTaskSnapshot;
 
-    // Release the image data
-    asset.releaseOriginal();
+              // Release the image data
+              asset.releaseOriginal();
 
-    uploadTask.onComplete.then((value) {
-      if (value.error == null) {
-        storageTaskSnapshot = value;
-        storageTaskSnapshot.ref.getDownloadURL().then((downloadUrl) {
-          photoUrl = downloadUrl;
-          print('Upload success');
-        }, onError: (err) {
-          throw (err);
-        });
-      } else {
-        throw ('This file is not an image');
-      }
-      return photoUrl;
-    }, onError: (err) {
-      print('This file is not an image');
-      throw (err.toString());
-    });
+              StorageTaskSnapshot snapshot = await uploadTask.onComplete.timeout(
+                  const Duration(seconds: 60),
+                  onTimeout: () =>
+                      throw ('Upload could not be completed. Operation timeout'));
 
-    return photoUrl;
+              if (snapshot.error == null) {
+                storageTaskSnapshot = snapshot;
+                final String downloadUrl =
+                    await storageTaskSnapshot.ref.getDownloadURL();
+
+                uploadUrls.add(downloadUrl);
+                print('Upload success');
+              } else {
+                print('Error from image repo ${snapshot.error.toString()}');
+                throw ('An error occured while uploading image. Upload error');
+              }
+            }),
+            eagerError: true,
+            cleanUp: (_) {
+              print('eager cleaned up');
+            })
+        .timeout(const Duration(seconds: 70),
+            onTimeout: () =>
+                throw ('Upload could not be completed. Operation timeout'));
+
+    return uploadUrls;
   }
 }

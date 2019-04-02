@@ -53,26 +53,20 @@ class ProfileRepository {
 
       return Profile(
           uid: uid,
-          firstname: pref.getString('firstname') ?? _profileSnap['firstname'],
-          lastname: pref.getString('lastname') ?? _profileSnap['lastname'],
-          mobilePhone:
-              pref.getString('mobilePhone') ?? _profileSnap['mobilePhone'],
+          firstname: pref.getString('firstname'),
+          lastname: pref.getString('lastname'),
+          mobilePhone: pref.getString('mobilePhone'),
           page: Page(
               uid: uid,
-              pageTitle:
-                  pref.getString('pageTitle') ?? _profileSnap['pageTitle'],
-              pageDescription: pref.getString('pageDescription') ??
-                  _profileSnap['pageDescription'],
-              pageImageUrl: pref.getString('pageImageUrl') ??
-                  _profileSnap['pageImageUrl'],
-              created: pref.getString('created') ?? _profileSnap['created'],
-              lastUpdate:
-                  pref.getString('lastUpdate') ?? _profileSnap['lastUpdate']),
-          location: pref.getString('location') ?? _profileSnap['location'],
-          imageUrl: pref.getString('imageUrl') ?? _profileSnap['imageUrl'],
-          created: pref.getString('created') ?? _profileSnap['created'],
-          lastUpdate:
-              pref.getString('lastUpdate') ?? _profileSnap['lastUpdate']);
+              pageTitle: pref.getString('pageTitle'),
+              pageDescription: pref.getString('pageDescription'),
+              pageImageUrl: pref.getString('pageImageUrl'),
+              created: pref.getString('created'),
+              lastUpdate: pref.getString('lastUpdate')),
+          location: pref.getString('location'),
+          imageUrl: pref.getString('imageUrl'),
+          created: pref.getString('created'),
+          lastUpdate: pref.getString('lastUpdate'));
     } catch (e) {
       throw (e);
     }
@@ -110,7 +104,7 @@ class ProfileRepository {
 
       return profiles;
     } catch (e) {
-      throw(e);
+      throw (e);
     }
   }
 
