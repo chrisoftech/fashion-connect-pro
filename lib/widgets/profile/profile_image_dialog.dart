@@ -28,9 +28,7 @@ class ProfileImageDialog extends StatefulWidget {
 class _ProfileImageDialogState extends State<ProfileImageDialog> {
   ImageUploadBloc _imageUploadBloc;
   ImageRepository _imageRepository;
-
-  // BuildContext get currentContext => _scaffoldKey;
-
+  
   List<Asset> _images = List<Asset>();
   String _error;
 
@@ -76,7 +74,7 @@ class _ProfileImageDialogState extends State<ProfileImageDialog> {
     });
   }
 
-  Widget _buildPostDialogCloseControl() {
+  Widget _buildPostDialogActionControl() {
     return Positioned(
       top: 0.0,
       right: 10.0,
@@ -158,7 +156,7 @@ class _ProfileImageDialogState extends State<ProfileImageDialog> {
 
   Widget _buildPostFormImagesStack() {
     return Stack(
-      children: <Widget>[_buildPostImage(), _buildPostDialogCloseControl()],
+      children: <Widget>[_buildPostImage(), _buildPostDialogActionControl()],
     );
   }
 

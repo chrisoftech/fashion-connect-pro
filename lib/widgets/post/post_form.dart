@@ -1,14 +1,62 @@
+import 'package:fashion_connect/models/models.dart';
+import 'package:fashion_connect/utilities/utilities.dart';
 import 'package:flutter/material.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:flutter/services.dart';
 
 class PostForm extends StatefulWidget {
+  final Profile profile;
+
+  const PostForm({Key key, @required this.profile}) : super(key: key);
+
   @override
   _PostFormState createState() => _PostFormState();
 }
 
 class _PostFormState extends State<PostForm> {
+  Profile profile;
+
+  @override
+  void didUpdateWidget(Widget oldWidget) {
+    profile = widget.profile;
+    super.didUpdateWidget(oldWidget);
+  }
+
+  List<Asset> _images = List<Asset>();
+  String _error;
+
   bool _isProductAvail = false;
 
-  Widget _buildPostDialogCloseControl() {
+  Future<void> _loadAssets() async {
+    // _scaffoldKey.currentState.hideCurrentSnackBar();
+
+    setState(() {
+      _images = List<Asset>();
+    });
+
+    List<Asset> resultList;
+    String error;
+
+    try {
+      resultList = await MultiImagePicker.pickImages(
+        maxImages: 6,
+      );
+    } on PlatformException catch (e) {
+      error = e.message;
+    }
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
+
+    setState(() {
+      _images = resultList;
+      if (error == null) _error = 'No Error Dectected';
+    });
+  }
+
+  Widget _buildPostDialogActionControl() {
     return Positioned(
       top: 0.0,
       right: 20.0,
@@ -20,29 +68,58 @@ class _PostFormState extends State<PostForm> {
               bottomLeft: Radius.circular(20.0),
               bottomRight: Radius.circular(20.0)),
         ),
-        child: IconButton(
-          icon: Icon(
-            Icons.close,
-            color: Theme.of(context).errorColor,
-            size: 30.0,
-          ),
-          onPressed: () {
-            Navigator.of(context).pop();
-            print('Close dialog');
-          },
+        child: Row(
+          children: <Widget>[
+            IconButton(
+              icon: Icon(
+                Icons.add_a_photo,
+                color: Theme.of(context).accentColor,
+                size: 30.0,
+              ),
+              onPressed: _loadAssets,
+            ),
+            IconButton(
+              icon: Icon(
+                Icons.close,
+                color: Theme.of(context).errorColor,
+                size: 30.0,
+              ),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildPostImages() {
-    return Container(
-      width: double.infinity,
-      child: Image.asset(
-        'assets/images/temp3.jpg',
-        fit: BoxFit.cover,
-      ),
+  Widget _buildGridView() {
+    return GridView.count(
+      crossAxisCount: 1,
+      children: List.generate(_images.length, (index) {
+        return AssetView(index, _images[index]);
+      }),
     );
+  }
+
+  Widget _buildPostImages() {
+    if (_images.length < 1) {
+      return Container(
+        width: double.infinity,
+        child: Image.asset(
+          'assets/avatars/bg-avatar.png',
+          fit: BoxFit.cover,
+        ),
+      );
+    } else {
+      return _buildGridView();
+    }
+    // return Container(
+    //   width: double.infinity,
+    //   child: Image.asset(
+    //     'assets/images/temp3.jpg',
+    //     fit: BoxFit.cover,
+    //   ),
+    // );
   }
 
   Widget _buildPostProfileImage() {
@@ -64,27 +141,6 @@ class _PostFormState extends State<PostForm> {
         ),
       ),
     );
-  }
-
-  Widget _buildPostFormImageControl() {
-    return Container(
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: Theme.of(context).primaryColorDark,
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20.0),
-              bottomLeft: Radius.circular(20.0)),
-        ),
-        child: IconButton(
-          icon: Icon(
-            Icons.add_a_photo,
-            color: Theme.of(context).accentColor,
-            size: 30.0,
-          ),
-          onPressed: () {
-            print('Add image');
-          },
-        ));
   }
 
   Widget _buildPostSynopsis() {
@@ -120,16 +176,6 @@ class _PostFormState extends State<PostForm> {
               ],
             ),
           ),
-          Container(
-              alignment: Alignment.center,
-              padding: EdgeInsets.only(right: 5.0),
-              decoration: BoxDecoration(
-                color: Theme.of(context).primaryColorDark,
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20.0),
-                    bottomLeft: Radius.circular(20.0)),
-              ),
-              child: _buildPostFormImageControl()),
         ],
       ),
     );
@@ -137,7 +183,7 @@ class _PostFormState extends State<PostForm> {
 
   Widget _buildPostFormImagesStack() {
     return Stack(
-      children: <Widget>[_buildPostImages(), _buildPostDialogCloseControl()],
+      children: <Widget>[_buildPostImages(), _buildPostDialogActionControl()],
     );
   }
 
@@ -214,31 +260,6 @@ class _PostFormState extends State<PostForm> {
       ),
     );
   }
-
-  // void _buildPostBottomSheet() {
-  //   showModalBottomSheet(
-  //       context: context,
-  //       builder: (BuildContext context) {
-  //         return Container(
-  //           height: 1000.0,
-  //           child: CustomScrollView(
-  //             slivers: <Widget>[
-  //               SliverAppBar(
-  //                 pinned: true,
-  //                 automaticallyImplyLeading: false,
-  //                 expandedHeight: 200.0,
-  //                 flexibleSpace: _buildPostFormImagesStack(),
-  //                 bottom: PreferredSize(
-  //                   preferredSize: Size.fromHeight(30.0),
-  //                   child: _buildPostSynopsis(),
-  //                 ),
-  //               ),
-  //               SliverToBoxAdapter(child: _buildPostFormInput())
-  //             ],
-  //           ),
-  //         );
-  //       });
-  // }
 
   @override
   Widget build(BuildContext context) {

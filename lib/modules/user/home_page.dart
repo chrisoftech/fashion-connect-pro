@@ -1,8 +1,10 @@
 import 'package:fashion_connect/blocs/profile_bloc.dart';
+import 'package:fashion_connect/models/models.dart';
 import 'package:fashion_connect/repositories/repositories.dart';
 import 'package:fashion_connect/utilities/utilities.dart';
 import 'package:fashion_connect/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 enum SectionLabelAction {
   Timeline,
@@ -22,6 +24,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     _profileRepository = ProfileRepository();
     _profileBloc = ProfileBloc(profileRepository: _profileRepository);
+    _profileBloc.onFetchProfile();
     super.initState();
   }
 
@@ -33,8 +36,8 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildSearchInput() {
     return Container(
-      height: 160.0,
-      padding: EdgeInsets.all(20.0),
+      // height: 140.0,
+      padding: EdgeInsets.all(10.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -42,10 +45,10 @@ class _HomePageState extends State<HomePage> {
             'How can we help you today?',
             style: TextStyle(
                 color: Theme.of(context).backgroundColor,
-                fontSize: 25.0,
+                fontSize: 20.0,
                 fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: 20.0),
+          SizedBox(height: 10.0),
           TextField(
             style: TextStyle(fontSize: 20.0),
             decoration: InputDecoration(
@@ -95,7 +98,32 @@ class _HomePageState extends State<HomePage> {
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
-          return PostForm();
+          return BlocBuilder<ProfileEvent, ProfileState>(
+            bloc: _profileBloc,
+            builder: (BuildContext context, ProfileState state) {
+              print('loading unh6i');
+              if (state is ProfileUninitialized) {
+                print('loading');
+                return Center(child: CircularProgressIndicator());
+              }
+
+              if (state is ProfileError) {
+                print('error');
+                return Center(child: Text('Failed to to fetch profile :('));
+              }
+
+              Profile profile;
+
+              if (state is ProfileLoaded) {
+                print('loaded');
+                profile = state.profile ?? null;
+                print(profile.firstname);
+                return PostForm(profile: profile);
+              }
+
+              return PostForm(profile: profile);
+            },
+          );
         });
   }
 
@@ -127,11 +155,8 @@ class _HomePageState extends State<HomePage> {
               floating: true,
               centerTitle: true,
               expandedHeight: 0.0,
-              // actions: <Widget>[
-              //   _buildPostDialogCloseControl()
-              // ],
               bottom: PreferredSize(
-                preferredSize: Size.fromHeight(160.0),
+                preferredSize: Size.fromHeight(125.0),
                 child: _buildSearchInput(),
               ),
             ),

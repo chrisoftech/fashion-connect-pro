@@ -252,7 +252,7 @@ class _ProfileSliverState extends State<ProfileSliver> {
           slivers: <Widget>[
             SliverAppBar(
               pinned: true,
-              expandedHeight: 300.0,
+              expandedHeight: 250.0,
               actions: <Widget>[_buildSliverAction()],
               flexibleSpace: _buildProfileImageStack(),
               bottom: PreferredSize(

@@ -14,11 +14,11 @@ class PopularPages extends StatefulWidget {
 }
 
 class _PopularPagesState extends State<PopularPages> {
-  ProfileBloc get _pageBloc => widget.profileBloc;
+  ProfileBloc get _profileBloc => widget.profileBloc;
 
   @override
   void initState() {
-    _pageBloc.onFetchProfiles();
+    _profileBloc.onFetchProfiles();
     super.initState();
   }
 
@@ -115,7 +115,7 @@ class _PopularPagesState extends State<PopularPages> {
     final double _screenWidth = MediaQuery.of(context).size.width;
     final double _contentWidth = _screenWidth > 400.0 ? 450.0 : _screenWidth;
 
-    final _pageDescriptionContentWidth = _contentWidth - 220.0;
+    final _pageDescriptionContentWidth = _contentWidth - 140.0;
 
     return InkWell(
       onTap: () {
@@ -132,44 +132,44 @@ class _PopularPagesState extends State<PopularPages> {
               height: 130.0,
               width: _contentWidth,
               child: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   Padding(
-                    padding: const EdgeInsets.only(left: 20.0),
+                    padding: const EdgeInsets.only(left: 10.0),
                     child: _buildPageImage(profile: profile),
                   ),
-                  SizedBox(width: 20.0),
-                  Column(
-                    children: <Widget>[
-                      Container(
-                        width: _pageDescriptionContentWidth,
-                        padding: EdgeInsets.symmetric(vertical: 20.0),
-                        child: _buildPageTitleRow(profile: profile),
-                      ),
-                      Container(
-                        width: _pageDescriptionContentWidth,
-                        child: _buildPageDescription(profile: profile),
-                      ),
-                      Container(
-                        width: _pageDescriptionContentWidth,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: <Widget>[
-                            Icon(
-                              Icons.favorite_border,
-                              color: Theme.of(context).backgroundColor,
-                              size: 15.0,
-                            ),
-                            SizedBox(width: 5.0),
-                            Text(
-                              '1K',
-                              style: TextStyle(
-                                color: Theme.of(context).accentColor,
+                  SizedBox(width: 10.0),
+                  Expanded(
+                    child: Container(
+                      width: _pageDescriptionContentWidth,
+                      padding: EdgeInsets.all(10.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          _buildPageTitleRow(profile: profile),
+                          SizedBox(height: 20.0),
+                          _buildPageDescription(profile: profile),
+                          SizedBox(height: 10.0),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              Icon(
+                                Icons.favorite_border,
+                                color: Theme.of(context).backgroundColor,
+                                size: 15.0,
                               ),
-                            ),
-                          ],
-                        ),
+                              SizedBox(width: 5.0),
+                              Text(
+                                '1K',
+                                style: TextStyle(
+                                  color: Theme.of(context).accentColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   )
                 ],
               ),
@@ -184,17 +184,16 @@ class _PopularPagesState extends State<PopularPages> {
   @override
   Widget build(BuildContext context) {
     final double _screenHeight = MediaQuery.of(context).size.height;
-    final double _contentHeight = _screenHeight - 250.0;
+    final double _contentHeight = _screenHeight - 210.0;
 
     return BlocBuilder<ProfileEvent, ProfileState>(
-      bloc: _pageBloc,
+      bloc: _profileBloc,
       builder: (BuildContext context, ProfileState state) {
         if (state is ProfileUninitialized) {
           return Center(child: CircularProgressIndicator());
         }
-
         if (state is ProfileError) {
-          return Center(child: Text('Faild to load pages :('));
+          return Center(child: Text('Failed to load pages :('));
         }
 
         if (state is ProfilesLoaded) {
@@ -214,6 +213,8 @@ class _PopularPagesState extends State<PopularPages> {
             ),
           );
         }
+
+        return Container();
       },
     );
   }

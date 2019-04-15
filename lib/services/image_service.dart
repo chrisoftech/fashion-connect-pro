@@ -43,7 +43,7 @@ class ImageService {
             cleanUp: (_) {
               print('eager cleaned up');
             })
-        .timeout(const Duration(seconds: 70),
+        .timeout(const Duration(seconds: 60),
             onTimeout: () =>
                 throw ('Upload could not be completed. Operation timeout'));
 
