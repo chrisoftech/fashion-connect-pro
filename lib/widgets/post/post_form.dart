@@ -14,13 +14,7 @@ class PostForm extends StatefulWidget {
 }
 
 class _PostFormState extends State<PostForm> {
-  Profile profile;
-
-  @override
-  void didUpdateWidget(Widget oldWidget) {
-    profile = widget.profile;
-    super.didUpdateWidget(oldWidget);
-  }
+  Profile get _profile => widget.profile;
 
   List<Asset> _images = List<Asset>();
   String _error;
@@ -137,7 +131,13 @@ class _PostFormState extends State<PostForm> {
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(30.0),
-          child: Image.asset('assets/images/temp3.jpg', fit: BoxFit.cover),
+          child: _profile.imageUrl.isNotEmpty
+              ? FadeInImage(
+                  fit: BoxFit.cover,
+                  placeholder: AssetImage('assets/loader/loader.gif'),
+                  image: NetworkImage('${_profile.imageUrl}'),
+                )
+              : Image.asset('assets/avatars/ps-avatar.png', fit: BoxFit.cover),
         ),
       ),
     );

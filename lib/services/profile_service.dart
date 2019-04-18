@@ -27,7 +27,7 @@ class ProfileService {
     return _db.collection('profile').document(uid).setData({
       'firstname': firstname,
       'lastname': lastname,
-      'mobilePhone': mobilePhone,
+      'mobilePhone': mobilePhone.trim(),
       'pageTitle': pageTitle,
       'pageDescription': pageDescription,
       'location': location,
@@ -35,6 +35,22 @@ class ProfileService {
       'pageImageUrl': '',
       'created': _serverTimestamp,
       'lastUpdate': _serverTimestamp
+    }, merge: true);
+  }
+
+  Future<void> setProfileImage(
+      {@required String uid, @required String imageUrl}) {
+    return _db.collection('profile').document(uid).setData({
+      'imageUrl': imageUrl,
+      'lastUpdate': _serverTimestamp,
+    }, merge: true);
+  }
+
+  Future<void> setProfilePageImage(
+      {@required String uid, @required String pageImageUrl}) {
+    return _db.collection('profile').document(uid).setData({
+      'pageImageUrl': pageImageUrl,
+      'lastUpdate': _serverTimestamp,
     }, merge: true);
   }
 }

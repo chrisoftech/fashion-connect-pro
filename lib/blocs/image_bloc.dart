@@ -99,6 +99,7 @@ class ImageUploadBloc extends Bloc<ImageUploadEvent, ImageUploadState> {
             profileImageSelectMode: event.profileImageSelectMode);
 
         await imageRepository.persistImageUrl(
+          uid: event.uid,
             imageUrl: imageUrl,
             profileImageSelectMode: event.profileImageSelectMode);
         yield ImageUploadSuccess(imageUrl: imageUrl);

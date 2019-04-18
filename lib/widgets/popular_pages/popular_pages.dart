@@ -184,7 +184,7 @@ class _PopularPagesState extends State<PopularPages> {
   @override
   Widget build(BuildContext context) {
     final double _screenHeight = MediaQuery.of(context).size.height;
-    final double _contentHeight = _screenHeight - 210.0;
+    final double _contentHeight = _screenHeight - 190.0;
 
     return BlocBuilder<ProfileEvent, ProfileState>(
       bloc: _profileBloc,

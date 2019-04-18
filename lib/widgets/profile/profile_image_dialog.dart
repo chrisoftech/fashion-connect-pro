@@ -225,8 +225,8 @@ class _ProfileImageDialogState extends State<ProfileImageDialog> {
             _onWidgetDidBuild(() {
               _scaffoldKey.currentState.showSnackBar(
                 SnackBar(
-                  content: Text('${state.error}'),
-                  // content: Text('Oops! An error occured while uploading image'),
+                  // content: Text('${state.error}'),
+                  content: Text('Oops! An error occured while uploading image'),
                   backgroundColor: Colors.red,
                 ),
               );

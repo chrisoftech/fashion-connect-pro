@@ -4,7 +4,6 @@ import 'package:fashion_connect/repositories/repositories.dart';
 import 'package:fashion_connect/utilities/utilities.dart';
 import 'package:fashion_connect/widgets/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 enum SectionLabelAction {
   Timeline,
@@ -20,11 +19,15 @@ class _HomePageState extends State<HomePage> {
   ProfileBloc _profileBloc;
   ProfileRepository _profileRepository;
 
+  Profile _profile;
+
   @override
   void initState() {
     _profileRepository = ProfileRepository();
     _profileBloc = ProfileBloc(profileRepository: _profileRepository);
     _profileBloc.onFetchProfile();
+
+    _fetchProfile();
     super.initState();
   }
 
@@ -32,6 +35,10 @@ class _HomePageState extends State<HomePage> {
   void dispose() {
     _profileBloc.dispose();
     super.dispose();
+  }
+
+  Future<void> _fetchProfile() async {
+    _profile = await _profileRepository.fetchProfile();
   }
 
   Widget _buildSearchInput() {
@@ -52,7 +59,8 @@ class _HomePageState extends State<HomePage> {
           TextField(
             style: TextStyle(fontSize: 20.0),
             decoration: InputDecoration(
-                labelText: 'Search for pages',
+                // labelText: 'Search for pages',
+                hintText: 'Search for pages',
                 filled: true,
                 prefixIcon: Icon(Icons.search),
                 suffixIcon: Icon(Icons.mic),
@@ -98,32 +106,9 @@ class _HomePageState extends State<HomePage> {
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
-          return BlocBuilder<ProfileEvent, ProfileState>(
-            bloc: _profileBloc,
-            builder: (BuildContext context, ProfileState state) {
-              print('loading unh6i');
-              if (state is ProfileUninitialized) {
-                print('loading');
-                return Center(child: CircularProgressIndicator());
-              }
-
-              if (state is ProfileError) {
-                print('error');
-                return Center(child: Text('Failed to to fetch profile :('));
-              }
-
-              Profile profile;
-
-              if (state is ProfileLoaded) {
-                print('loaded');
-                profile = state.profile ?? null;
-                print(profile.firstname);
-                return PostForm(profile: profile);
-              }
-
-              return PostForm(profile: profile);
-            },
-          );
+          _fetchProfile();
+          print(_profile.imageUrl);
+          return PostForm(profile: _profile);
         });
   }
 
@@ -156,7 +141,8 @@ class _HomePageState extends State<HomePage> {
               centerTitle: true,
               expandedHeight: 0.0,
               bottom: PreferredSize(
-                preferredSize: Size.fromHeight(125.0),
+                // preferredSize: Size.fromHeight(125.0),
+                preferredSize: Size.fromHeight(105.0),
                 child: _buildSearchInput(),
               ),
             ),

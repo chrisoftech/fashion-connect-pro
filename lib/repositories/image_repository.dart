@@ -7,6 +7,7 @@ import 'package:uuid/uuid.dart';
 
 class ImageRepository {
   final _imageService = ImageService();
+  final _profileService = ProfileService();
 
   Future<List<String>> uploadImage(
       {@required String uid,
@@ -31,12 +32,22 @@ class ImageRepository {
   }
 
   Future<void> persistImageUrl(
-      {@required List<String> imageUrl,
+      {@required String uid,
+      @required List<String> imageUrl,
       @required ProfileImageSelectMode profileImageSelectMode}) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
 
-    profileImageSelectMode == ProfileImageSelectMode.UserImage
-        ? await pref.setString('imageUrl', imageUrl[0])
-        : await pref.setString('pageImageUrl', imageUrl[0]);
+    try {
+      if (profileImageSelectMode == ProfileImageSelectMode.UserImage) {
+        _profileService.setProfileImage(uid: uid, imageUrl: imageUrl[0]);
+        await pref.setString('imageUrl', imageUrl[0]);
+      } else if (profileImageSelectMode == ProfileImageSelectMode.PageImage) {
+        _profileService.setProfilePageImage(
+            uid: uid, pageImageUrl: imageUrl[0]);
+        await pref.setString('pageImageUrl', imageUrl[0]);
+      }
+    } catch (e) {
+      throw (e);
+    }
   }
 }
