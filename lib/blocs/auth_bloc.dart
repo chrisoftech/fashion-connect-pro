@@ -105,7 +105,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           user: event.user, authMode: event.authMode);
 
       await profileRepository.fetchProfile();
-      
+
       bool hasProfile = await profileRepository.hasProfile();
 
       yield AuthAuthenticated(hasProfile: hasProfile);

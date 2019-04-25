@@ -1,11 +1,15 @@
+import 'package:fashion_connect/blocs/blocs.dart';
 import 'package:fashion_connect/models/models.dart';
 import 'package:fashion_connect/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProfileSliver extends StatefulWidget {
   final Profile profile;
+  final Function fetchProfile;
 
-  const ProfileSliver({Key key, @required this.profile}) : super(key: key);
+  const ProfileSliver({Key key, @required this.profile, this.fetchProfile})
+      : super(key: key);
 
   @override
   _ProfileSliverState createState() => _ProfileSliverState();
@@ -15,6 +19,7 @@ class _ProfileSliverState extends State<ProfileSliver> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   ProfileTabMode _profileTabMode = ProfileTabMode.Timeline;
 
+  Function get _fetchProfile => widget.fetchProfile;
   Profile get _profile => widget.profile;
 
   Widget _buildBackgroundImage() {
@@ -27,6 +32,7 @@ class _ProfileSliverState extends State<ProfileSliver> {
             profileImageSelectMode: ProfileImageSelectMode.PageImage);
       },
       child: Container(
+        // height: 250.0,
         width: double.infinity,
         child: _profile.page.pageImageUrl.isNotEmpty
             ? FadeInImage(
@@ -51,7 +57,7 @@ class _ProfileSliverState extends State<ProfileSliver> {
               profile: _profile,
               scaffoldKey: _scaffoldKey,
               profileImageSelectMode: profileImageSelectMode);
-        });
+        }).then((_) => _fetchProfile());
   }
 
   Widget _buildProfileImage() {

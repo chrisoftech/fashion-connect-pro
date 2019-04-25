@@ -28,7 +28,7 @@ class ProfileImageDialog extends StatefulWidget {
 class _ProfileImageDialogState extends State<ProfileImageDialog> {
   ImageUploadBloc _imageUploadBloc;
   ImageRepository _imageRepository;
-  
+
   List<Asset> _images = List<Asset>();
   String _error;
 
@@ -104,7 +104,7 @@ class _ProfileImageDialogState extends State<ProfileImageDialog> {
               ),
               onPressed: () {
                 _scaffoldKey.currentState.hideCurrentSnackBar();
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(true);
               },
             ),
           ],
@@ -243,7 +243,7 @@ class _ProfileImageDialogState extends State<ProfileImageDialog> {
                 ),
               );
               _imageUploadBloc.onImageUploadReset();
-              Navigator.of(context).pop();
+              Navigator.of(context).pop(true);
             });
           }
 

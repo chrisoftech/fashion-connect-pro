@@ -55,6 +55,7 @@ class _PopularPagesState extends State<PopularPages> {
                 ? ClipRRect(
                     borderRadius: BorderRadius.circular(45.0),
                     child: FadeInImage(
+                      fit: BoxFit.cover,
                       placeholder: AssetImage('assets/loader/loader.gif'),
                       image: NetworkImage('${profile.page.pageImageUrl}'),
                     ),

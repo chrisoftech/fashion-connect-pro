@@ -89,8 +89,7 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
+  @override  Widget build(BuildContext context) {
     return BlocProvider<AuthBloc>(
       bloc: _authBloc,
       child: MaterialApp(
