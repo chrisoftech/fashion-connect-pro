@@ -58,9 +58,16 @@ class ImageRepository {
       final String imageUrl = pref.getString('imageUrl');
       final String pageImageUrl = pref.getString('pageImageUrl');
 
-      return profileImageSelectMode == ProfileImageSelectMode.UserImage
-          ? _imageService.deleteProfileImage(imageUrl: imageUrl)
-          : _imageService.deleteProfileImage(imageUrl: pageImageUrl);
-    } catch (e) {}
+      if (profileImageSelectMode == ProfileImageSelectMode.UserImage &&
+          imageUrl.isNotEmpty) {
+        return await _imageService.deleteProfileImage(imageUrl: imageUrl);
+      } else if (profileImageSelectMode == ProfileImageSelectMode.PageImage &&
+          pageImageUrl.isNotEmpty) {
+        return await _imageService.deleteProfileImage(imageUrl: pageImageUrl);
+      } else
+        return;
+    } catch (e) {
+      throw (e);
+    }
   }
 }
