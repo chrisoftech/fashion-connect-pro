@@ -1,14 +1,17 @@
-import 'package:fashion_connect/blocs/blocs.dart';
 import 'package:fashion_connect/models/models.dart';
 import 'package:fashion_connect/widgets/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProfileSliver extends StatefulWidget {
   final Profile profile;
   final Function fetchProfile;
+  final bool isCurrentUserProfile;
 
-  const ProfileSliver({Key key, @required this.profile, this.fetchProfile})
+  const ProfileSliver(
+      {Key key,
+      @required this.profile,
+      this.fetchProfile,
+      this.isCurrentUserProfile = false})
       : super(key: key);
 
   @override
@@ -21,16 +24,19 @@ class _ProfileSliverState extends State<ProfileSliver> {
 
   Function get _fetchProfile => widget.fetchProfile;
   Profile get _profile => widget.profile;
+  bool get _isCurrentUserProfile => widget.isCurrentUserProfile;
 
   Widget _buildBackgroundImage() {
     return InkWell(
-      onTap: () {
-        _openSelectImageDialog(
-            imageUrl: _profile.page.pageImageUrl.isNotEmpty
-                ? '${_profile.page.pageImageUrl}'
-                : '',
-            profileImageSelectMode: ProfileImageSelectMode.PageImage);
-      },
+      onTap: !_isCurrentUserProfile
+          ? null
+          : () {
+              _openSelectImageDialog(
+                  imageUrl: _profile.page.pageImageUrl.isNotEmpty
+                      ? '${_profile.page.pageImageUrl}'
+                      : '',
+                  profileImageSelectMode: ProfileImageSelectMode.PageImage);
+            },
       child: Container(
         // height: 250.0,
         width: double.infinity,
@@ -62,11 +68,14 @@ class _ProfileSliverState extends State<ProfileSliver> {
 
   Widget _buildProfileImage() {
     return InkWell(
-      onTap: () {
-        _openSelectImageDialog(
-            imageUrl: _profile.imageUrl.isNotEmpty ? _profile.imageUrl : '',
-            profileImageSelectMode: ProfileImageSelectMode.UserImage);
-      },
+      onTap: !_isCurrentUserProfile
+          ? null
+          : () {
+              _openSelectImageDialog(
+                  imageUrl:
+                      _profile.imageUrl.isNotEmpty ? _profile.imageUrl : '',
+                  profileImageSelectMode: ProfileImageSelectMode.UserImage);
+            },
       child: Container(
         height: 60.0,
         width: 60.0,

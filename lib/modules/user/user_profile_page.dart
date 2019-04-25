@@ -49,7 +49,10 @@ class _UserProfilePageState extends State<UserProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _profile != null
-          ? ProfileSliver(profile: _profile, fetchProfile: _fetchProfile)
+          ? ProfileSliver(
+              profile: _profile,
+              fetchProfile: _fetchProfile,
+              isCurrentUserProfile: true)
           : Center(
               child: CircularProgressIndicator(),
             ),
