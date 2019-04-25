@@ -5,7 +5,7 @@ import 'package:meta/meta.dart';
 import 'package:multi_image_picker/asset.dart';
 
 class ImageService {
-  Future<List<String>> uploadImage(
+  Future<List<String>> uploadProfileImage(
       {@required String fileName, @required List<Asset> assets}) async {
     List<String> uploadUrls = [];
 
@@ -48,5 +48,13 @@ class ImageService {
                 throw ('Upload could not be completed. Operation timeout'));
 
     return uploadUrls;
+  }
+
+  Future<void> deleteProfileImage({@required String imageUrl}) async {
+    if (imageUrl.isNotEmpty) {
+      final StorageReference reference =
+          await FirebaseStorage.instance.getReferenceFromUrl(imageUrl);
+      return reference.delete();
+    }
   }
 }

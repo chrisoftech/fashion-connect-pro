@@ -67,7 +67,7 @@ class ImageUploadBloc extends Bloc<ImageUploadEvent, ImageUploadState> {
 
   @override
   ImageUploadState get initialState => ImageUploadInitial();
-  
+
   void onImageUploadReset() {
     dispatch(ImageUploadReset());
   }
@@ -93,13 +93,16 @@ class ImageUploadBloc extends Bloc<ImageUploadEvent, ImageUploadState> {
       yield ImageUploadLoading();
 
       try {
-        final List<String> imageUrl = await imageRepository.uploadImage(
+        final List<String> imageUrl = await imageRepository.uploadProfileImage(
             uid: event.uid,
             asset: event.asset,
             profileImageSelectMode: event.profileImageSelectMode);
 
-        await imageRepository.persistImageUrl(
-          uid: event.uid,
+        await imageRepository.deleteExistingProfileImage(
+            profileImageSelectMode: event.profileImageSelectMode);
+
+        await imageRepository.persistProfileImageUrl(
+            uid: event.uid,
             imageUrl: imageUrl,
             profileImageSelectMode: event.profileImageSelectMode);
         yield ImageUploadSuccess(imageUrl: imageUrl);

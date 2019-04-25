@@ -9,7 +9,7 @@ class ImageRepository {
   final _imageService = ImageService();
   final _profileService = ProfileService();
 
-  Future<List<String>> uploadImage(
+  Future<List<String>> uploadProfileImage(
       {@required String uid,
       @required ProfileImageSelectMode profileImageSelectMode,
       @required List<Asset> asset}) async {
@@ -21,8 +21,8 @@ class ImageRepository {
               : 'page';
       final String fileName = '$uid/$fileLocation/${uuid.v1()}';
 
-      final List<String> imageUrl =
-          await _imageService.uploadImage(fileName: fileName, assets: asset);
+      final List<String> imageUrl = await _imageService.uploadProfileImage(
+          fileName: fileName, assets: asset);
 
       print('Image uploaded ${imageUrl.toList()}');
       return imageUrl;
@@ -31,7 +31,7 @@ class ImageRepository {
     }
   }
 
-  Future<void> persistImageUrl(
+  Future<void> persistProfileImageUrl(
       {@required String uid,
       @required List<String> imageUrl,
       @required ProfileImageSelectMode profileImageSelectMode}) async {
@@ -49,5 +49,18 @@ class ImageRepository {
     } catch (e) {
       throw (e);
     }
+  }
+
+  Future<void> deleteExistingProfileImage(
+      {@required ProfileImageSelectMode profileImageSelectMode}) async {
+    try {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      final String imageUrl = pref.getString('imageUrl');
+      final String pageImageUrl = pref.getString('pageImageUrl');
+
+      return profileImageSelectMode == ProfileImageSelectMode.UserImage
+          ? _imageService.deleteProfileImage(imageUrl: imageUrl)
+          : _imageService.deleteProfileImage(imageUrl: pageImageUrl);
+    } catch (e) {}
   }
 }
