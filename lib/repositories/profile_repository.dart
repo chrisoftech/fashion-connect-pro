@@ -17,6 +17,26 @@ class ProfileRepository {
     return pref.getString('username');
   }
 
+  Future<Profile> get getProfile async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    return Profile(
+        uid: pref.getString('uid'),
+        firstname: pref.getString('firstname'),
+        lastname: pref.getString('lastname'),
+        mobilePhone: pref.getString('mobilePhone'),
+        page: Page(
+            uid: pref.getString('uid'),
+            pageTitle: pref.getString('pageTitle'),
+            pageDescription: pref.getString('pageDescription'),
+            pageImageUrl: pref.getString('pageImageUrl'),
+            created: pref.getString('created'),
+            lastUpdate: pref.getString('lastUpdate')),
+        location: pref.getString('location'),
+        imageUrl: pref.getString('imageUrl'),
+        created: pref.getString('created'),
+        lastUpdate: pref.getString('lastUpdate'));
+  }
+
   Future<bool> hasProfile() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
 
@@ -51,22 +71,23 @@ class ProfileRepository {
             'lastUpdate', _profileSnap['lastUpdate'].toString());
       }
 
-      return Profile(
-          uid: uid,
-          firstname: pref.getString('firstname'),
-          lastname: pref.getString('lastname'),
-          mobilePhone: pref.getString('mobilePhone'),
-          page: Page(
-              uid: uid,
-              pageTitle: pref.getString('pageTitle'),
-              pageDescription: pref.getString('pageDescription'),
-              pageImageUrl: pref.getString('pageImageUrl'),
-              created: pref.getString('created'),
-              lastUpdate: pref.getString('lastUpdate')),
-          location: pref.getString('location'),
-          imageUrl: pref.getString('imageUrl'),
-          created: pref.getString('created'),
-          lastUpdate: pref.getString('lastUpdate'));
+      return getProfile;
+      // return Profile(
+      //     uid: uid,
+      //     firstname: pref.getString('firstname'),
+      //     lastname: pref.getString('lastname'),
+      //     mobilePhone: pref.getString('mobilePhone'),
+      //     page: Page(
+      //         uid: uid,
+      //         pageTitle: pref.getString('pageTitle'),
+      //         pageDescription: pref.getString('pageDescription'),
+      //         pageImageUrl: pref.getString('pageImageUrl'),
+      //         created: pref.getString('created'),
+      //         lastUpdate: pref.getString('lastUpdate')),
+      //     location: pref.getString('location'),
+      //     imageUrl: pref.getString('imageUrl'),
+      //     created: pref.getString('created'),
+      //     lastUpdate: pref.getString('lastUpdate'));
     } catch (e) {
       throw (e);
     }
@@ -118,7 +139,7 @@ class ProfileRepository {
       final String uid = await _uid;
       final String username = await _username;
 
-      await _profileService.createProfile(
+      return await _profileService.createProfile(
           uid: uid,
           username: username,
           firstname: firstname,

@@ -105,7 +105,7 @@ class ProfileFormBloc extends Bloc<ProfileFormEvent, ProfileFormState> {
 
         yield ProfileFormSuccess();
       } catch (e) {
-        yield ProfileFormFailure(error: e);
+        yield ProfileFormFailure(error: e.toString());
       }
     }
   }
