@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fashion_connect/models/models.dart';
 import 'package:fashion_connect/utilities/utilities.dart';
 import 'package:flutter/material.dart';
@@ -132,10 +133,12 @@ class _PostFormState extends State<PostForm> {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(30.0),
           child: _profile.imageUrl.isNotEmpty
-              ? FadeInImage(
+              ? CachedNetworkImage(
                   fit: BoxFit.cover,
-                  placeholder: AssetImage('assets/loader/loader.gif'),
-                  image: NetworkImage('${_profile.imageUrl}'),
+                  imageUrl: '${_profile.imageUrl}',
+                  placeholder: (context, url) =>
+                      new CircularProgressIndicator(),
+                  errorWidget: (context, url, error) => new Icon(Icons.error),
                 )
               : Image.asset('assets/avatars/ps-avatar.png', fit: BoxFit.cover),
         ),

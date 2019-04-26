@@ -3,6 +3,7 @@ import 'package:fashion_connect/models/models.dart';
 import 'package:fashion_connect/modules/modules.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class PopularPages extends StatefulWidget {
   final ProfileBloc profileBloc;
@@ -42,22 +43,24 @@ class _PopularPagesState extends State<PopularPages> {
                   borderRadius: BorderRadius.circular(55.0))),
         ),
         Positioned(
-          top: 15.0,
-          left: 15.0,
+          top: 10.0,
+          left: 10.0,
           child: Container(
-            height: 90.0,
-            width: 90.0,
+            height: 100.0,
+            width: 100.0,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(45.0),
-              border: Border.all(width: 2.0, color: Colors.white),
+              borderRadius: BorderRadius.circular(50.0),
             ),
             child: profile.page.pageImageUrl.isNotEmpty
                 ? ClipRRect(
                     borderRadius: BorderRadius.circular(45.0),
-                    child: FadeInImage(
+                    child: CachedNetworkImage(
                       fit: BoxFit.cover,
-                      placeholder: AssetImage('assets/loader/loader.gif'),
-                      image: NetworkImage('${profile.page.pageImageUrl}'),
+                      imageUrl: '${profile.page.pageImageUrl}',
+                      placeholder: (context, url) =>
+                          new CircularProgressIndicator(),
+                      errorWidget: (context, url, error) =>
+                          new Icon(Icons.error),
                     ),
                   )
                 : ClipRRect(

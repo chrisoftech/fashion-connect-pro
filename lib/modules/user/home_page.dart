@@ -107,7 +107,6 @@ class _HomePageState extends State<HomePage> {
         barrierDismissible: false,
         builder: (BuildContext context) {
           _fetchProfile();
-          print(_profile.imageUrl);
           return PostForm(profile: _profile);
         });
   }

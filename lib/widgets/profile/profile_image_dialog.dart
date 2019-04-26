@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fashion_connect/blocs/blocs.dart';
 import 'package:fashion_connect/models/models.dart';
 import 'package:fashion_connect/repositories/repositories.dart';
@@ -121,10 +122,12 @@ class _ProfileImageDialogState extends State<ProfileImageDialog> {
               children: <Widget>[Expanded(child: AssetView(0, _images[0]))],
             )
           : _imageUrl.isNotEmpty
-              ? FadeInImage(
+              ? CachedNetworkImage(
                   fit: BoxFit.cover,
-                  placeholder: AssetImage('assets/loader/loader.gif'),
-                  image: NetworkImage('$_imageUrl'),
+                  imageUrl: '$_imageUrl',
+                  placeholder: (context, url) =>
+                      new CircularProgressIndicator(),
+                  errorWidget: (context, url, error) => new Icon(Icons.error),
                 )
               : Image.asset(
                   'assets/avatars/avatar.png',
