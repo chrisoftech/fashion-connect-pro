@@ -30,7 +30,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
   // }
 
   Future<void> _fetchProfile() async {
-    Profile profile = await _profileRepository.fetchProfile();
+    Profile profile = await _profileRepository.getProfile;
     setState(() {
       _profile = profile;
       print('profile updated!!!!');

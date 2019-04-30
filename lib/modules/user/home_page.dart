@@ -1,4 +1,4 @@
-import 'package:fashion_connect/blocs/profile_bloc.dart';
+import 'package:fashion_connect/blocs/blocs.dart';
 import 'package:fashion_connect/models/models.dart';
 import 'package:fashion_connect/repositories/repositories.dart';
 import 'package:fashion_connect/utilities/utilities.dart';
@@ -19,6 +19,9 @@ class _HomePageState extends State<HomePage> {
   ProfileBloc _profileBloc;
   ProfileRepository _profileRepository;
 
+  PostFormBloc _postFormBloc;
+  PostRepository _postRepository;
+
   Profile _profile;
 
   @override
@@ -26,6 +29,9 @@ class _HomePageState extends State<HomePage> {
     _profileRepository = ProfileRepository();
     _profileBloc = ProfileBloc(profileRepository: _profileRepository);
     _profileBloc.onFetchProfile();
+
+    _postRepository = PostRepository();
+    _postFormBloc = PostFormBloc(postRepository: _postRepository);
 
     _fetchProfile();
     super.initState();
@@ -38,7 +44,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _fetchProfile() async {
-    _profile = await _profileRepository.fetchProfile();
+    _profile = await _profileRepository.getProfile;
   }
 
   Widget _buildSearchInput() {
@@ -101,13 +107,20 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void _buildPostDialogBox() {
+  void _buildPostDialogModal() {
+    // Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //         builder: (BuildContext context) {
+    //           return PostForm(profile: _profile, postFormBloc: _postFormBloc);
+    //         },
+    //         fullscreenDialog: true));
     showDialog(
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
           _fetchProfile();
-          return PostForm(profile: _profile);
+          return PostForm(profile: _profile, postFormBloc: _postFormBloc);
         });
   }
 
@@ -119,8 +132,8 @@ class _HomePageState extends State<HomePage> {
         size: 35.0,
         color: Theme.of(context).accentColor,
       ),
-      // onPressed: _buildPostBottomSheet,
-      onPressed: _buildPostDialogBox,
+      // onPressed: _buildPostDialogBox,
+      onPressed: _buildPostDialogModal,
     );
   }
 

@@ -163,12 +163,6 @@ class _ProfileImageDialogState extends State<ProfileImageDialog> {
     );
   }
 
-  void _onWidgetDidBuild(Function callback) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      callback();
-    });
-  }
-
   Widget _buildPostFormControl({@required ImageUploadState state}) {
     return Expanded(
       child: Material(
@@ -217,6 +211,12 @@ class _ProfileImageDialogState extends State<ProfileImageDialog> {
         uid: _profile.uid,
         asset: _images,
         profileImageSelectMode: _profileImageSelectMode);
+  }
+
+  void _onWidgetDidBuild(Function callback) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      callback();
+    });
   }
 
   @override

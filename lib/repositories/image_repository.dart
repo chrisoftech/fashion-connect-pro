@@ -70,4 +70,21 @@ class ImageRepository {
       throw (e);
     }
   }
+
+  Future<List<String>> uploadPostImage(
+      {@required String uid,
+      @required String postId,
+      @required List<Asset> assets}) async {
+    try {
+      final String fileLocation = '$uid/posts/$postId}';
+
+      final List<String> imageUrl = await _imageService.uploadPostImage(
+          fileLocation: fileLocation, assets: assets);
+
+      print('Image uploaded ${imageUrl.toList()}');
+      return imageUrl;
+    } catch (e) {
+      throw (e);
+    }
+  }
 }

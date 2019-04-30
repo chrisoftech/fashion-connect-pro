@@ -1,25 +1,62 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fashion_connect/models/models.dart';
 import 'package:fashion_connect/repositories/repositories.dart';
 import 'package:fashion_connect/services/services.dart';
 import 'package:meta/meta.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
 
 class PostRepository {
-  final _profileService = PostService();
+  final _postService = PostService();
+
   final _profileRepository = ProfileRepository();
+  final _imageRepository = ImageRepository();
+
+  Future<List<String>> _createPostImage(
+      {@required String uid,
+      @required String postId,
+      @required List<Asset> assets}) async {
+    return await _imageRepository.uploadPostImage(
+        uid: uid, postId: postId, assets: assets);
+  }
 
   Future<void> createPost(
       {@required String title,
       @required String description,
       @required double price,
-      @required bool availability}) async {
+      @required bool isAvailable,
+      @required List<Asset> assets}) async {
     try {
-      final Profile userProfile = await _profileRepository.getProfile;
-      return await _profileService.createPost(
-          title: title,
-          description: description,
-          price: price,
-          availability: availability,
-          userProfile: userProfile);
+      final Profile profile = await _profileRepository.getProfile;
+      final String uid = profile.uid;
+      final String pageTitle = profile.page.pageTitle;
+      final String pageImageUrl = profile.page.pageImageUrl;
+
+      DocumentReference documentReference = await _postService.createPost(
+        title: title,
+        description: description,
+        price: price,
+        isAvailable: isAvailable,
+        uid: uid,
+        pageTitle: pageTitle,
+        pageImageUrl: pageImageUrl,
+      );
+
+      final postId = documentReference.documentID;
+
+      List<String> postImageUrls =
+          await _createPostImage(uid: uid, postId: postId, assets: assets);
+
+      return await _postService.setPostImage(
+          postId: postId, postImageUrls: postImageUrls);
+
+      //  _createPostImage(uid: uid, postId: postId, assets: assets)
+      //     .then((List<String> postImageUrls) async {
+      //   print('after upload');
+      //   await _postService.setPostImage(
+      //       postId: postId, postImageUrls: postImageUrls);
+      // });
+
+      // return;
     } catch (e) {
       throw (e);
     }

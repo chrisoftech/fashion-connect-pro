@@ -27,14 +27,14 @@ class _PopularPagesState extends State<PopularPages> {
     return Stack(
       children: <Widget>[
         Container(
-            height: 120.0,
-            width: 120.0,
+            height: 110.0,
+            width: 110.0,
             decoration: BoxDecoration(
                 color: Theme.of(context).backgroundColor,
-                borderRadius: BorderRadius.circular(40.0))),
+                borderRadius: BorderRadius.circular(36.6))),
         Positioned(
-          top: 5.0,
-          left: 5.0,
+          // top: 5.0,
+          // left: 5.0,
           child: Container(
               height: 110.0,
               width: 110.0,
@@ -43,8 +43,8 @@ class _PopularPagesState extends State<PopularPages> {
                   borderRadius: BorderRadius.circular(55.0))),
         ),
         Positioned(
-          top: 10.0,
-          left: 10.0,
+          top: 5.0,
+          left: 5.0,
           child: Container(
             height: 100.0,
             width: 100.0,
