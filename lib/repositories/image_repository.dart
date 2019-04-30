@@ -76,7 +76,7 @@ class ImageRepository {
       @required String postId,
       @required List<Asset> assets}) async {
     try {
-      final String fileLocation = '$uid/posts/$postId}';
+      final String fileLocation = '$uid/posts/$postId';
 
       final List<String> imageUrl = await _imageService.uploadPostImage(
           fileLocation: fileLocation, assets: assets);

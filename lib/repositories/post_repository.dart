@@ -43,18 +43,18 @@ class PostRepository {
 
       final postId = documentReference.documentID;
 
-      List<String> postImageUrls =
-          await _createPostImage(uid: uid, postId: postId, assets: assets);
+      // List<String> postImageUrls =
+      //     await _createPostImage(uid: uid, postId: postId, assets: assets);
 
-      return await _postService.setPostImage(
-          postId: postId, postImageUrls: postImageUrls);
+      // return await _postService.setPostImage(
+      //     postId: postId, postImageUrls: postImageUrls);
 
-      //  _createPostImage(uid: uid, postId: postId, assets: assets)
-      //     .then((List<String> postImageUrls) async {
-      //   print('after upload');
-      //   await _postService.setPostImage(
-      //       postId: postId, postImageUrls: postImageUrls);
-      // });
+      return await _createPostImage(uid: uid, postId: postId, assets: assets)
+          .then((List<String> postImageUrls) async {
+        print('after upload');
+        return await _postService.setPostImage(
+            postId: postId, postImageUrls: postImageUrls);
+      });
 
       // return;
     } catch (e) {

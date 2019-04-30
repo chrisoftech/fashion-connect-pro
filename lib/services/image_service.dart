@@ -4,8 +4,20 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:meta/meta.dart';
 import 'package:multi_image_picker/asset.dart';
 import 'package:uuid/uuid.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 class ImageService {
+  Future<Uint8List> _compressFile(
+      {@required List<int> imageData, int quality = 20}) async {
+    print("beforeCompress = ${imageData.length}");
+    List<int> compressedImageData = await FlutterImageCompress.compressWithList(
+        imageData,
+        quality: quality);
+    print("after = ${compressedImageData?.length ?? 0}");
+
+    return Uint8List.fromList(compressedImageData);
+  }
+
   Future<List<String>> uploadProfileImage(
       {@required String fileName, @required List<Asset> assets}) async {
     List<String> uploadUrls = [];
@@ -15,9 +27,13 @@ class ImageService {
               ByteData byteData = await asset.requestOriginal();
               List<int> imageData = byteData.buffer.asUint8List();
 
+              // compress file
+              Uint8List compressedFile =
+                  await _compressFile(imageData: imageData, quality: 30);
+
               StorageReference reference =
                   FirebaseStorage.instance.ref().child(fileName);
-              StorageUploadTask uploadTask = reference.putData(imageData);
+              StorageUploadTask uploadTask = reference.putData(compressedFile);
               StorageTaskSnapshot storageTaskSnapshot;
 
               // Release the image data
@@ -68,12 +84,16 @@ class ImageService {
               ByteData byteData = await asset.requestOriginal();
               List<int> imageData = byteData.buffer.asUint8List();
 
+              // compress file
+              Uint8List compressedFile =
+                  await _compressFile(imageData: imageData);
+
               final uuid = Uuid();
               final fileName = '$fileLocation/${uuid.v1()}';
 
               StorageReference reference =
                   FirebaseStorage.instance.ref().child(fileName);
-              StorageUploadTask uploadTask = reference.putData(imageData);
+              StorageUploadTask uploadTask = reference.putData(compressedFile);
               StorageTaskSnapshot storageTaskSnapshot;
 
               // Release the image data

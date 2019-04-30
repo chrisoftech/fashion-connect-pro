@@ -45,8 +45,10 @@ class _ProfileSliverState extends State<ProfileSliver> {
             ? CachedNetworkImage(
                 fit: BoxFit.cover,
                 imageUrl: '${_profile.page.pageImageUrl}',
-                placeholder: (context, url) => new CircularProgressIndicator(),
-                errorWidget: (context, url, error) => new Icon(Icons.error),
+                placeholder: (context, url) =>
+                    Center(child: new CircularProgressIndicator()),
+                errorWidget: (context, url, error) =>
+                    Center(child: new Icon(Icons.error)),
               )
             : Image.asset('assets/avatars/bg-avatar.png', fit: BoxFit.cover),
       ),

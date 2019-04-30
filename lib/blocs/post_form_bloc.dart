@@ -58,7 +58,7 @@ class PostFormButtonPressed extends PostFormEvent {
 
   @override
   String toString() =>
-      'PostFormButtonPressed { title: $title, description: $description, price: $price, availability: $isAvailable }';
+      'PostFormButtonPressed { title: $title, description: $description, price: $price, availability: $isAvailable, assets: ${assets.length} }';
 }
 
 class PostFormBloc extends Bloc<PostFormEvent, PostFormState> {
