@@ -261,6 +261,23 @@ class _ProfileSliverState extends State<ProfileSliver> {
     );
   }
 
+  Widget _buildDynamicTabPages() {
+    if (_profileTabMode == ProfileTabMode.Timeline) {
+      return Posts();
+    } else if (_profileTabMode == ProfileTabMode.Gallery) {
+      return Container(
+        child: Center(
+          child: Text('This is the gallery page'),
+        ),
+      );
+    } else
+      return Container(
+        child: Center(
+          child: Text('This is the profile page'),
+        ),
+      );
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -282,7 +299,7 @@ class _ProfileSliverState extends State<ProfileSliver> {
               ),
             ),
             SliverToBoxAdapter(
-              child: Posts(),
+              child: _buildDynamicTabPages(),
             )
           ],
         ),
