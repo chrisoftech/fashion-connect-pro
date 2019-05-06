@@ -1,27 +1,92 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fashion_connect/models/models.dart';
 import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
-class PostItem extends StatelessWidget {
+class PostItem extends StatefulWidget {
   final Post post;
 
   const PostItem({Key key, @required this.post}) : super(key: key);
 
-  Post get _post => post;
+  @override
+  _PostItemState createState() => _PostItemState();
+}
+
+class _PostItemState extends State<PostItem> {
+  int _currentPostImageIndex = 0;
+
+  Post get _post => widget.post;
 
   @override
   Widget build(BuildContext context) {
+    Widget _buildActivePostImage() {
+      return Container(
+          width: 8.0,
+          height: 8.0,
+          margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
+          decoration: BoxDecoration(
+              shape: BoxShape.circle, color: Color.fromRGBO(0, 0, 0, 0.9)));
+    }
+
+    Widget _buildInactivePostImage() {
+      return Container(
+          width: 8.0,
+          height: 8.0,
+          margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
+          decoration: BoxDecoration(
+              shape: BoxShape.circle, color: Color.fromRGBO(0, 0, 0, 0.4)));
+    }
+
+    Widget _buildPostImageCarouselIndicator() {
+      List<Widget> dots = [];
+
+      for (int i = 0; i < _post.postImageUrls.length; i++) {
+        dots.add(i == _currentPostImageIndex
+            ? _buildActivePostImage()
+            : _buildInactivePostImage());
+      }
+
+      return Positioned(
+          left: 0.0,
+          right: 0.0,
+          bottom: 130.0,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: dots,
+          ));
+    }
+
+    Widget _buildPostImageCarousel() {
+      return CarouselSlider(
+          height: 400.0,
+          viewportFraction: _post.postImageUrls.length > 1 ? 0.8 : 1.0,
+          enableInfiniteScroll: false,
+          enlargeCenterPage: true,
+          onPageChanged: (int index) {
+            setState(() {
+              _currentPostImageIndex = index;
+            });
+          },
+          items: _post.postImageUrls.map((postImageUrl) {
+            return Builder(
+              builder: (BuildContext context) {
+                return CachedNetworkImage(
+                  fit: BoxFit.cover,
+                  imageUrl: '$postImageUrl',
+                  placeholder: (context, url) =>
+                      Center(child: new CircularProgressIndicator()),
+                  errorWidget: (context, url, error) =>
+                      Center(child: new Icon(Icons.error)),
+                );
+              },
+            );
+          }).toList());
+    }
+
     Widget _buildPostCardBackgroundImage() {
       return Container(
         child: _post.postImageUrls.length > 0
-            ? CachedNetworkImage(
-                fit: BoxFit.cover,
-                imageUrl: '${_post.postImageUrls[0]}',
-                placeholder: (context, url) =>
-                    Center(child: new CircularProgressIndicator()),
-                errorWidget: (context, url, error) =>
-                    Center(child: new Icon(Icons.error)),
-              )
+            ? _buildPostImageCarousel()
             : Image.asset('assets/avatars/bg-avatar.png', fit: BoxFit.cover),
       );
     }
@@ -150,6 +215,7 @@ class PostItem extends StatelessWidget {
                   Stack(
                     children: <Widget>[
                       _buildPostCardBackgroundImage(),
+                      _buildPostImageCarouselIndicator(),
                       _buildPostCardActions(),
                       _buildPostCardSynopsis(),
                     ],
