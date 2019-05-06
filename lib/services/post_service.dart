@@ -5,6 +5,13 @@ class PostService {
   final _db = Firestore.instance;
   final _serverTimestamp = FieldValue.serverTimestamp();
 
+  Future<QuerySnapshot> fetchPosts() {
+    return _db
+        .collection('posts')
+        .orderBy('lastUpdate', descending: true)
+        .getDocuments();
+  }
+
   Future<DocumentReference> createPost({
     @required String title,
     @required String description,
@@ -22,16 +29,17 @@ class PostService {
       'uid': uid,
       'pageTitle': pageTitle,
       'pageImageUrl': pageImageUrl,
+      'postImageUrls': <String>[],
       'created': _serverTimestamp,
       'lastUpdate': _serverTimestamp
     });
   }
 
-  Future<void> setPostImage( {
-      @required String postId,
-      @required List<String> postImageUrls}) {
-        return _db.collection('posts').document(postId).setData({
-          'postImageUrls': postImageUrls
-        }, merge: true);
+  Future<void> setPostImage(
+      {@required String postId, @required List<String> postImageUrls}) {
+    return _db
+        .collection('posts')
+        .document(postId)
+        .setData({'postImageUrls': postImageUrls}, merge: true);
   }
 }

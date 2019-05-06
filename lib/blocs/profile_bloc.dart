@@ -67,8 +67,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   }
 
   @override
-  Stream<ProfileState> mapEventToState(
-      ProfileState currentState, ProfileEvent event) async* {
+  Stream<ProfileState> mapEventToState(ProfileEvent event) async* {
     if (event is FetchProfile) {
       try {
         final profile = await profileRepository.fetchProfile();

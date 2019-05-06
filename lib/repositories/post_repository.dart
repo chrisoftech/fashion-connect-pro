@@ -19,6 +19,38 @@ class PostRepository {
         uid: uid, postId: postId, assets: assets);
   }
 
+  Future<List<Post>> fetchPosts() async {
+    try {
+      QuerySnapshot snapshot = await _postService.fetchPosts();
+      final List<Post> posts = [];
+
+      if (snapshot.documents.length == -1) return posts;
+      snapshot.documents.forEach((DocumentSnapshot snap) {
+        final String postId = snap.documentID;
+
+        posts.add(
+          Post(
+            postId: postId,
+            title: snap['title'],
+            description: snap['description'],
+            price: snap['price'],
+            isAvailable: snap['isAvailable'],
+            uid: snap['uid'],
+            pageTitle: snap['pageTitle'],
+            pageImageUrl: snap['pageImageUrl'],
+            postImageUrls: snap['postImageUrls'],
+            created: snap['created'],
+            lastUpdate: snap['lastUpdate'],
+          ),
+        );
+      });
+
+      return posts;
+    } catch (e) {
+      throw (e);
+    }
+  }
+
   Future<void> createPost(
       {@required String title,
       @required String description,

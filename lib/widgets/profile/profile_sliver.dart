@@ -1,5 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:fashion_connect/blocs/blocs.dart';
 import 'package:fashion_connect/models/models.dart';
+import 'package:fashion_connect/repositories/repositories.dart';
 import 'package:fashion_connect/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
@@ -22,6 +24,24 @@ class ProfileSliver extends StatefulWidget {
 class _ProfileSliverState extends State<ProfileSliver> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   ProfileTabMode _profileTabMode = ProfileTabMode.Timeline;
+
+  PostBloc _postBloc;
+  PostRepository _postRepository;
+
+  @override
+  void initState() {
+    _postRepository = PostRepository();
+    _postBloc = PostBloc(postRepository: _postRepository);
+
+    _postBloc.onFetchPosts();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _postBloc.dispose();
+    super.dispose();
+  }
 
   Function get _fetchProfile => widget.fetchProfile;
   Profile get _profile => widget.profile;
@@ -263,15 +283,17 @@ class _ProfileSliverState extends State<ProfileSliver> {
 
   Widget _buildDynamicTabPages() {
     if (_profileTabMode == ProfileTabMode.Timeline) {
-      return Posts();
+      return Posts(postBloc: _postBloc);
     } else if (_profileTabMode == ProfileTabMode.Gallery) {
       return Container(
+        padding: const EdgeInsets.symmetric(vertical: 20.0),
         child: Center(
           child: Text('This is the gallery page'),
         ),
       );
     } else
       return Container(
+        padding: const EdgeInsets.symmetric(vertical: 20.0),
         child: Center(
           child: Text('This is the profile page'),
         ),
@@ -290,7 +312,7 @@ class _ProfileSliverState extends State<ProfileSliver> {
           slivers: <Widget>[
             SliverAppBar(
               pinned: true,
-              expandedHeight: 250.0,
+              // expandedHeight: 250.0,
               actions: <Widget>[_buildSliverAction()],
               flexibleSpace: _buildProfileImageStack(),
               bottom: PreferredSize(

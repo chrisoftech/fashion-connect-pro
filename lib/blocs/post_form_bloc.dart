@@ -88,8 +88,7 @@ class PostFormBloc extends Bloc<PostFormEvent, PostFormState> {
   }
 
   @override
-  Stream<PostFormState> mapEventToState(
-      PostFormState currentState, PostFormEvent event) async* {
+  Stream<PostFormState> mapEventToState(PostFormEvent event) async* {
     if (event is PostFormButtonPressed) {
       yield PostFormLoading();
 

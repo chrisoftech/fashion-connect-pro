@@ -87,8 +87,7 @@ class ProfileFormBloc extends Bloc<ProfileFormEvent, ProfileFormState> {
   }
 
   @override
-  Stream<ProfileFormState> mapEventToState(
-      ProfileFormState currentState, ProfileFormEvent event) async* {
+  Stream<ProfileFormState> mapEventToState(ProfileFormEvent event) async* {
     if (event is ProfileFormButtonPressed) {
       yield ProfileFormLoading();
 

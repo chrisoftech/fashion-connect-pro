@@ -1,20 +1,28 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:fashion_connect/models/models.dart';
 import 'package:flutter/material.dart';
 
 class PostItem extends StatelessWidget {
-  final String post;
+  final Post post;
 
   const PostItem({Key key, @required this.post}) : super(key: key);
 
-  String get _post => post;
+  Post get _post => post;
 
   @override
   Widget build(BuildContext context) {
-    Widget _buildPostCardBackgroundImage({@required String post}) {
+    Widget _buildPostCardBackgroundImage() {
       return Container(
-        child: Image.asset(
-          '$post',
-          fit: BoxFit.cover,
-        ),
+        child: _post.postImageUrls.length > 0
+            ? CachedNetworkImage(
+                fit: BoxFit.cover,
+                imageUrl: '${_post.postImageUrls[0]}',
+                placeholder: (context, url) =>
+                    Center(child: new CircularProgressIndicator()),
+                errorWidget: (context, url, error) =>
+                    Center(child: new Icon(Icons.error)),
+              )
+            : Image.asset('assets/avatars/bg-avatar.png', fit: BoxFit.cover),
       );
     }
 
@@ -72,10 +80,10 @@ class PostItem extends StatelessWidget {
     Widget _buildPostTitle() {
       return Row(
         children: <Widget>[
-          Expanded(child: Text('Product title')),
+          Expanded(child: Text('${_post.title}')),
           Text(
-            'c10.0',
-            style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
+            'c${_post.price}',
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ],
       );
@@ -84,8 +92,7 @@ class PostItem extends StatelessWidget {
     Widget _buildPostDecription() {
       return Row(
         children: <Widget>[
-          Expanded(
-              child: Text('Product Description and other details i dont ...')),
+          Expanded(child: Text('${_post.description}')),
           Icon(
             Icons.favorite_border,
             color: Theme.of(context).backgroundColor,
@@ -117,7 +124,7 @@ class PostItem extends StatelessWidget {
       );
     }
 
-    Widget _buildPostItem({@required String post}) {
+    Widget _buildPostItem() {
       final _deviceWidth = MediaQuery.of(context).size.width;
       final _contentWidth = _deviceWidth > 400.0 ? 450.0 : _deviceWidth;
 
@@ -131,8 +138,8 @@ class PostItem extends StatelessWidget {
                   ListTile(
                     leading: CircleAvatar(
                         backgroundImage: AssetImage('assets/images/temp3.jpg')),
-                    title: Text('John Doe'),
-                    subtitle: Text('March 28, Thursday 2019'),
+                    title: Text('${_post.uid}'),
+                    subtitle: Text('${_post.lastUpdate}'),
                     trailing: IconButton(
                       onPressed: () {
                         print('isFavorite');
@@ -142,7 +149,7 @@ class PostItem extends StatelessWidget {
                   ),
                   Stack(
                     children: <Widget>[
-                      _buildPostCardBackgroundImage(post: post),
+                      _buildPostCardBackgroundImage(),
                       _buildPostCardActions(),
                       _buildPostCardSynopsis(),
                     ],
@@ -156,6 +163,6 @@ class PostItem extends StatelessWidget {
       );
     }
 
-    return _buildPostItem(post: _post);
+    return _buildPostItem();
   }
 }

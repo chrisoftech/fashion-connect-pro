@@ -83,8 +83,7 @@ class ImageUploadBloc extends Bloc<ImageUploadEvent, ImageUploadState> {
   }
 
   @override
-  Stream<ImageUploadState> mapEventToState(
-      ImageUploadState currentState, ImageUploadEvent event) async* {
+  Stream<ImageUploadState> mapEventToState(ImageUploadEvent event) async* {
     if (event is ImageUploadReset) {
       yield ImageUploadInitial();
     }
