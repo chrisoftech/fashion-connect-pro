@@ -302,6 +302,8 @@ class _ProfileSliverState extends State<ProfileSliver> {
 
   @override
   Widget build(BuildContext context) {
+    final Orientation _deviceOrientation = MediaQuery.of(context).orientation;
+
     return GestureDetector(
       onTap: () {
         _scaffoldKey.currentState.hideCurrentSnackBar();
@@ -311,7 +313,7 @@ class _ProfileSliverState extends State<ProfileSliver> {
         body: CustomScrollView(
           slivers: <Widget>[
             SliverAppBar(
-              pinned: true,
+              pinned: _deviceOrientation == Orientation.portrait ? true : false,
               // expandedHeight: 250.0,
               actions: <Widget>[_buildSliverAction()],
               flexibleSpace: _buildProfileImageStack(),

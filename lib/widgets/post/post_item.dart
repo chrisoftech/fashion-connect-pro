@@ -70,13 +70,18 @@ class _PostItemState extends State<PostItem> {
           items: _post.postImageUrls.map((postImageUrl) {
             return Builder(
               builder: (BuildContext context) {
-                return CachedNetworkImage(
-                  fit: BoxFit.cover,
-                  imageUrl: '$postImageUrl',
-                  placeholder: (context, url) =>
-                      Center(child: new CircularProgressIndicator()),
-                  errorWidget: (context, url, error) =>
-                      Center(child: new Icon(Icons.error)),
+                return ClipRRect(
+                  borderRadius: BorderRadius.circular(
+                    _post.postImageUrls.length > 1 ? 10.0 : 0.0,
+                  ),
+                  child: CachedNetworkImage(
+                    fit: BoxFit.cover,
+                    imageUrl: '$postImageUrl',
+                    placeholder: (context, url) =>
+                        Center(child: new CircularProgressIndicator()),
+                    errorWidget: (context, url, error) =>
+                        Center(child: new Icon(Icons.error)),
+                  ),
                 );
               },
             );
@@ -215,7 +220,9 @@ class _PostItemState extends State<PostItem> {
                   Stack(
                     children: <Widget>[
                       _buildPostCardBackgroundImage(),
-                      _buildPostImageCarouselIndicator(),
+                      _post.postImageUrls.length > 1
+                          ? _buildPostImageCarouselIndicator()
+                          : Container(),
                       _buildPostCardActions(),
                       _buildPostCardSynopsis(),
                     ],

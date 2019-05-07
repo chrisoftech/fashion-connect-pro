@@ -226,7 +226,7 @@ class _PostFormState extends State<PostForm> {
           labelText: 'Description', filled: true, border: InputBorder.none),
       validator: (String value) {
         if (value.isEmpty) {
-          return 'Post title is required!';
+          return 'Post description is required!';
         }
         if (value.length > 50) {
           return 'Post description should be 40 to 50 characters long!';
@@ -406,7 +406,7 @@ class _PostFormState extends State<PostForm> {
              final String content = 'Item posted successfully';
             _buildMessageDialog(title: 'Success', content: content);
             _postFormBloc.onPostFormReset();
-            _resetFormFields();
+            // _resetFormFields();
           });
         }
 
