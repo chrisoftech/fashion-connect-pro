@@ -28,6 +28,7 @@ class _ProfileSliverState extends State<ProfileSliver> {
   PostBloc _postBloc;
   PostRepository _postRepository;
 
+ 
   @override
   void initState() {
     _postRepository = PostRepository();
@@ -46,6 +47,7 @@ class _ProfileSliverState extends State<ProfileSliver> {
   Function get _fetchProfile => widget.fetchProfile;
   Profile get _profile => widget.profile;
   bool get _isCurrentUserProfile => widget.isCurrentUserProfile;
+ 
 
   Widget _buildBackgroundImage() {
     return InkWell(

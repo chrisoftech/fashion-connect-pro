@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fashion_connect/models/models.dart';
 import 'package:fashion_connect/repositories/repositories.dart';
@@ -17,15 +18,20 @@ class PostUninitialized extends PostState {
 
 class PostLoaded extends PostState {
   final List<Post> posts;
+  final bool hasReachedMax;
 
-  PostLoaded({this.posts}) : super([posts]);
+  PostLoaded({@required this.posts, @required this.hasReachedMax})
+      : super([posts, hasReachedMax]);
 
-  PostLoaded copyWith({List<Post> posts}) {
-    return PostLoaded(posts: posts ?? this.posts);
+  PostLoaded copyWith({List<Post> posts, bool hasReachedMax}) {
+    return PostLoaded(
+        posts: posts ?? this.posts,
+        hasReachedMax: hasReachedMax ?? this.hasReachedMax);
   }
 
   @override
-  String toString() => 'PostLoaded { posts: ${posts.length}}';
+  String toString() =>
+      'PostLoaded { posts: ${posts.length}, hasReachedMax: $hasReachedMax }';
 }
 
 class PostError extends PostState {
@@ -73,10 +79,32 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
   @override
   Stream<PostState> mapEventToState(PostEvent event) async* {
-    if (event is FetchPosts) {
+    bool _hasReachedMax(PostState state) =>
+        state is PostLoaded && state.hasReachedMax;
+
+    if (event is FetchPosts && !_hasReachedMax(currentState)) {
       try {
-        List<Post> posts = await postRepository.fetchPosts();
-        yield PostLoaded(posts: posts);
+        if (currentState is PostUninitialized) {
+          List<Post> posts = await postRepository.fetchPosts(lastVisible: null);
+
+          yield PostLoaded(posts: posts, hasReachedMax: false);
+          return;
+        }
+
+        if (currentState is PostLoaded) {
+          final List<Post> currentPosts = (currentState as PostLoaded).posts;
+
+          final Post lastVisible = currentPosts[currentPosts.length - 1];
+
+          List<Post> posts =
+              await postRepository.fetchPosts(lastVisible: lastVisible);
+
+          yield posts.isEmpty
+              ? (currentState as PostLoaded).copyWith(hasReachedMax: true)
+              : PostLoaded(
+                  posts: (currentState as PostLoaded).posts + posts,
+                  hasReachedMax: false);
+        }
       } catch (e) {
         print(e.toString());
         yield PostError(error: e.toString());

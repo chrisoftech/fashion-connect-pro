@@ -1,5 +1,6 @@
 import 'package:fashion_connect/blocs/blocs.dart';
 import 'package:fashion_connect/models/models.dart';
+import 'package:fashion_connect/utilities/utilities.dart';
 import 'package:fashion_connect/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,6 +16,31 @@ class Posts extends StatefulWidget {
 
 class _PostsState extends State<Posts> {
   PostBloc get _postBloc => widget.postBloc;
+
+  final _scrollController = ScrollController();
+  final _scrollThreshold = 200.0;
+
+  @override
+  void initState() {
+    _scrollController.addListener(_onScroll);
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    super.dispose();
+  }
+
+  void _onScroll() {
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.position.pixels;
+    if (maxScroll - currentScroll <= _scrollThreshold) {
+      print('sroll next');
+      _postBloc.onFetchPosts();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,17 +82,19 @@ class _PostsState extends State<Posts> {
           return Container(
             height: _postsContentHeight,
             child: ListView.builder(
+              controller: _scrollController,
               itemCount: state.posts.length,
               itemBuilder: (BuildContext context, int index) {
                 final Post post = state.posts[index];
 
-                return PostItem(
-                  post: post,
-                );
+                return index >= state.posts.length
+                    ? BottomLoader()
+                    : PostItem(
+                        post: post,
+                      );
               },
             ),
           );
-          // return _buildPagePosts();
         }
       },
     );

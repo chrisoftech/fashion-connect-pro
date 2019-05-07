@@ -19,12 +19,14 @@ class PostRepository {
         uid: uid, postId: postId, assets: assets);
   }
 
-  Future<List<Post>> fetchPosts() async {
+  Future<List<Post>> fetchPosts({@required Post lastVisible}) async {
     try {
-      QuerySnapshot snapshot = await _postService.fetchPosts();
+      QuerySnapshot snapshot =
+          await _postService.fetchPosts(lastVisible: lastVisible);
+
       final List<Post> posts = [];
 
-      if (snapshot.documents.length == -1) return posts;
+      if (snapshot.documents.length < 1) return posts;
       snapshot.documents.forEach((DocumentSnapshot snap) {
         final String postId = snap.documentID;
 

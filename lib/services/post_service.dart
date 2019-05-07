@@ -1,15 +1,24 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fashion_connect/models/models.dart';
 import 'package:meta/meta.dart';
 
 class PostService {
   final _db = Firestore.instance;
   final _serverTimestamp = FieldValue.serverTimestamp();
 
-  Future<QuerySnapshot> fetchPosts() {
-    return _db
-        .collection('posts')
-        .orderBy('lastUpdate', descending: true)
-        .getDocuments();
+  Future<QuerySnapshot> fetchPosts({@required Post lastVisible}) {
+    return lastVisible == null
+        ? _db
+            .collection('posts')
+            .orderBy('lastUpdate', descending: true)
+            .limit(3)
+            .getDocuments()
+        : _db
+            .collection('posts')
+            .orderBy('lastUpdate', descending: true)
+            .startAfter([lastVisible.lastUpdate])
+            .limit(3)
+            .getDocuments();
   }
 
   Future<DocumentReference> createPost({
