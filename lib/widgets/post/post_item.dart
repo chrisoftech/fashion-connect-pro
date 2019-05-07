@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
 class PostItem extends StatefulWidget {
-  final Post post;
+  final PostUser postUser;
 
-  const PostItem({Key key, @required this.post}) : super(key: key);
+  const PostItem({Key key, @required this.postUser}) : super(key: key);
 
   @override
   _PostItemState createState() => _PostItemState();
@@ -15,7 +15,7 @@ class PostItem extends StatefulWidget {
 class _PostItemState extends State<PostItem> {
   int _currentPostImageIndex = 0;
 
-  Post get _post => widget.post;
+  PostUser get _postUser => widget.postUser;
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +40,7 @@ class _PostItemState extends State<PostItem> {
     Widget _buildPostImageCarouselIndicator() {
       List<Widget> dots = [];
 
-      for (int i = 0; i < _post.postImageUrls.length; i++) {
+      for (int i = 0; i < _postUser.post.postImageUrls.length; i++) {
         dots.add(i == _currentPostImageIndex
             ? _buildActivePostImage()
             : _buildInactivePostImage());
@@ -59,7 +59,7 @@ class _PostItemState extends State<PostItem> {
     Widget _buildPostImageCarousel() {
       return CarouselSlider(
           height: 400.0,
-          viewportFraction: _post.postImageUrls.length > 1 ? 0.8 : 1.0,
+          viewportFraction: _postUser.post.postImageUrls.length > 1 ? 0.8 : 1.0,
           enableInfiniteScroll: false,
           enlargeCenterPage: true,
           onPageChanged: (int index) {
@@ -67,12 +67,12 @@ class _PostItemState extends State<PostItem> {
               _currentPostImageIndex = index;
             });
           },
-          items: _post.postImageUrls.map((postImageUrl) {
+          items: _postUser.post.postImageUrls.map((postImageUrl) {
             return Builder(
               builder: (BuildContext context) {
                 return ClipRRect(
                   borderRadius: BorderRadius.circular(
-                    _post.postImageUrls.length > 1 ? 10.0 : 0.0,
+                    _postUser.post.postImageUrls.length > 1 ? 10.0 : 0.0,
                   ),
                   child: CachedNetworkImage(
                     fit: BoxFit.cover,
@@ -90,7 +90,7 @@ class _PostItemState extends State<PostItem> {
 
     Widget _buildPostCardBackgroundImage() {
       return Container(
-        child: _post.postImageUrls.length > 0
+        child: _postUser.post.postImageUrls.length > 0
             ? _buildPostImageCarousel()
             : Image.asset('assets/avatars/bg-avatar.png', fit: BoxFit.cover),
       );
@@ -150,9 +150,9 @@ class _PostItemState extends State<PostItem> {
     Widget _buildPostTitle() {
       return Row(
         children: <Widget>[
-          Expanded(child: Text('${_post.title}')),
+          Expanded(child: Text('${_postUser.post.title}')),
           Text(
-            'c${_post.price}',
+            'c${_postUser.post.price}',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ],
@@ -162,7 +162,7 @@ class _PostItemState extends State<PostItem> {
     Widget _buildPostDecription() {
       return Row(
         children: <Widget>[
-          Expanded(child: Text('${_post.description}')),
+          Expanded(child: Text('${_postUser.post.description}')),
           Icon(
             Icons.favorite_border,
             color: Theme.of(context).backgroundColor,
@@ -206,10 +206,30 @@ class _PostItemState extends State<PostItem> {
               child: Column(
                 children: <Widget>[
                   ListTile(
-                    leading: CircleAvatar(
-                        backgroundImage: AssetImage('assets/images/temp3.jpg')),
-                    title: Text('${_post.uid}'),
-                    subtitle: Text('${_post.lastUpdate}'),
+                    leading: Container(
+                      height: 50.0,
+                      width: 50.0,
+                      child: _postUser.userProfile.imageUrl.isNotEmpty
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(25.0),
+                              child: CachedNetworkImage(
+                                fit: BoxFit.cover,
+                                imageUrl: '${_postUser.userProfile.imageUrl}',
+                                placeholder: (context, url) =>
+                                    new CircularProgressIndicator(),
+                                errorWidget: (context, url, error) =>
+                                    new Icon(Icons.error),
+                              ),
+                            )
+                          : ClipRRect(
+                              borderRadius: BorderRadius.circular(25.0),
+                              child: Image.asset('assets/avatars/ps-avatar.png',
+                                  fit: BoxFit.cover),
+                            ),
+                    ),
+                    title: Text(
+                        '${_postUser.userProfile.firstname} ${_postUser.userProfile.lastname}'),
+                    subtitle: Text('${_postUser.post.lastUpdate}'),
                     trailing: IconButton(
                       onPressed: () {
                         print('isFavorite');
@@ -220,7 +240,7 @@ class _PostItemState extends State<PostItem> {
                   Stack(
                     children: <Widget>[
                       _buildPostCardBackgroundImage(),
-                      _post.postImageUrls.length > 1
+                      _postUser.post.postImageUrls.length > 1
                           ? _buildPostImageCarouselIndicator()
                           : Container(),
                       _buildPostCardActions(),

@@ -18,20 +18,26 @@ class PostUninitialized extends PostState {
 
 class PostLoaded extends PostState {
   final List<Post> posts;
+  final List<PostUser> postsUser;
   final bool hasReachedMax;
 
-  PostLoaded({@required this.posts, @required this.hasReachedMax})
-      : super([posts, hasReachedMax]);
+  PostLoaded(
+      {@required this.posts,
+      @required this.postsUser,
+      @required this.hasReachedMax})
+      : super([posts, postsUser, hasReachedMax]);
 
-  PostLoaded copyWith({List<Post> posts, bool hasReachedMax}) {
+  PostLoaded copyWith(
+      {List<Post> posts, List<PostUser> postsUser, bool hasReachedMax}) {
     return PostLoaded(
         posts: posts ?? this.posts,
+        postsUser: postsUser ?? this.postsUser,
         hasReachedMax: hasReachedMax ?? this.hasReachedMax);
   }
 
   @override
   String toString() =>
-      'PostLoaded { posts: ${posts.length}, hasReachedMax: $hasReachedMax }';
+      'PostLoaded { posts: ${posts.length}, postsUser: ${postsUser.length}, hasReachedMax: $hasReachedMax }';
 }
 
 class PostError extends PostState {
@@ -86,8 +92,11 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       try {
         if (currentState is PostUninitialized) {
           List<Post> posts = await postRepository.fetchPosts(lastVisible: null);
+          List<PostUser> postsUser =
+              await postRepository.fetchPostsUsers(posts: posts);
 
-          yield PostLoaded(posts: posts, hasReachedMax: false);
+          yield PostLoaded(
+              posts: posts, postsUser: postsUser, hasReachedMax: false);
           return;
         }
 
@@ -99,10 +108,14 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           List<Post> posts =
               await postRepository.fetchPosts(lastVisible: lastVisible);
 
+          List<PostUser> postsUser =
+              await postRepository.fetchPostsUsers(posts: posts);
+
           yield posts.isEmpty
               ? (currentState as PostLoaded).copyWith(hasReachedMax: true)
               : PostLoaded(
                   posts: (currentState as PostLoaded).posts + posts,
+                  postsUser: (currentState as PostLoaded).postsUser + postsUser,
                   hasReachedMax: false);
         }
       } catch (e) {

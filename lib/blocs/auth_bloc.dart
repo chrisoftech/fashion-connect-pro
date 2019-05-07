@@ -103,7 +103,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       await authRepository.persistUser(
           user: event.user, authMode: event.authMode);
 
-      await profileRepository.fetchProfile();
+      await profileRepository.fetchCurrentUserProfile();
 
       bool hasProfile = await profileRepository.hasProfile();
 

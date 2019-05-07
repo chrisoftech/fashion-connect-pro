@@ -84,7 +84,7 @@ class ImageRepository {
       print('Image uploaded ${imageUrl.toList()}');
       return imageUrl;
     } catch (e) {
-      throw (e);
+      throw Exception(e);
     }
   }
 }

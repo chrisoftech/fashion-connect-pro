@@ -100,7 +100,7 @@ class ImageService {
               asset.releaseOriginal();
 
               StorageTaskSnapshot snapshot = await uploadTask.onComplete.timeout(
-                  const Duration(seconds: 120),
+                  const Duration(seconds: 180),
                   onTimeout: () =>
                       throw ('Upload could not be completed. Operation timeout'));
 
@@ -120,7 +120,7 @@ class ImageService {
             cleanUp: (_) {
               print('eager cleaned up');
             })
-        .timeout(const Duration(seconds: 120),
+        .timeout(const Duration(seconds: 180),
             onTimeout: () =>
                 throw ('Upload could not be completed. Operation timeout'));
 

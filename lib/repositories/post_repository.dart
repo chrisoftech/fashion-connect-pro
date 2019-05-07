@@ -53,6 +53,23 @@ class PostRepository {
     }
   }
 
+  Future<List<PostUser>> fetchPostsUsers({@required List<Post> posts}) async {
+    try {
+      List<PostUser> postUser = [];
+
+      await Future.wait(posts.map((Post post) async {
+        final Profile profile =
+            await _profileRepository.fetchProfile(uid: post.uid);
+
+        postUser.add(PostUser(post: post, userProfile: profile));
+      }));
+
+      return postUser;
+    } catch (e) {
+      throw (e);
+    }
+  }
+
   Future<void> createPost(
       {@required String title,
       @required String description,

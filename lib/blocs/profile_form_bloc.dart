@@ -100,7 +100,7 @@ class ProfileFormBloc extends Bloc<ProfileFormEvent, ProfileFormState> {
           location: event.location,
         );
 
-        await profileRepository.fetchProfile();
+        await profileRepository.fetchCurrentUserProfile();
 
         yield ProfileFormSuccess();
       } catch (e) {

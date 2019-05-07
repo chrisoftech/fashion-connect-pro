@@ -45,7 +45,7 @@ class ProfileRepository {
     return false;
   }
 
-  Future<Profile> fetchProfile() async {
+  Future<Profile> fetchCurrentUserProfile() async {
     try {
       SharedPreferences pref = await SharedPreferences.getInstance();
       final String uid = await _uid;
@@ -72,22 +72,40 @@ class ProfileRepository {
       }
 
       return getProfile;
-      // return Profile(
-      //     uid: uid,
-      //     firstname: pref.getString('firstname'),
-      //     lastname: pref.getString('lastname'),
-      //     mobilePhone: pref.getString('mobilePhone'),
-      //     page: Page(
-      //         uid: uid,
-      //         pageTitle: pref.getString('pageTitle'),
-      //         pageDescription: pref.getString('pageDescription'),
-      //         pageImageUrl: pref.getString('pageImageUrl'),
-      //         created: pref.getString('created'),
-      //         lastUpdate: pref.getString('lastUpdate')),
-      //     location: pref.getString('location'),
-      //     imageUrl: pref.getString('imageUrl'),
-      //     created: pref.getString('created'),
-      //     lastUpdate: pref.getString('lastUpdate'));
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  Future<Profile> fetchProfile({@required String uid}) async {
+    try {
+      DocumentSnapshot documentSnapshot =
+          await _profileService.fetchProfile(uid: uid);
+
+      Profile profile;
+
+      final _profileSnap = documentSnapshot.data;
+
+      if (documentSnapshot.exists) {
+        profile = Profile(
+            uid: uid,
+            firstname: _profileSnap['firstname'],
+            lastname: _profileSnap['lastname'],
+            mobilePhone: _profileSnap['mobilePhone'],
+            page: Page(
+                uid: uid,
+                pageTitle: _profileSnap['pageTitle'],
+                pageDescription: _profileSnap['pageDescription'],
+                pageImageUrl: _profileSnap['imageUrl'],
+                created: _profileSnap['pageImageUrl'],
+                lastUpdate: _profileSnap['lastUpdate']),
+            location: _profileSnap['location'],
+            imageUrl: _profileSnap['imageUrl'],
+            created: _profileSnap['created'],
+            lastUpdate: _profileSnap['lastUpdate']);
+      }
+
+      return profile;
     } catch (e) {
       throw (e);
     }

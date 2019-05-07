@@ -48,7 +48,7 @@ class _PostFormState extends State<PostForm> {
 
     try {
       resultList = await MultiImagePicker.pickImages(
-        maxImages: 6,
+        maxImages: 4,
       );
     } on PlatformException catch (e) {
       error = e.message;

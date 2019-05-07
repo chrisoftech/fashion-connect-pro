@@ -70,7 +70,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   Stream<ProfileState> mapEventToState(ProfileEvent event) async* {
     if (event is FetchProfile) {
       try {
-        final profile = await profileRepository.fetchProfile();
+        final profile = await profileRepository.fetchCurrentUserProfile();
         yield ProfileLoaded(profile: profile);
       } catch (e) {
         print(e.toString());
