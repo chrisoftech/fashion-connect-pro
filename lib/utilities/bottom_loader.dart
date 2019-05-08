@@ -5,6 +5,7 @@ class BottomLoader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
+      padding: EdgeInsets.only(bottom: 20.0),
       child: Center(
         child: SizedBox(
           width: 33,

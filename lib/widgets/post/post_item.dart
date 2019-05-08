@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fashion_connect/models/models.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:intl/intl.dart';
 
 class PostItem extends StatefulWidget {
   final PostUser postUser;
@@ -229,7 +230,8 @@ class _PostItemState extends State<PostItem> {
                     ),
                     title: Text(
                         '${_postUser.userProfile.firstname} ${_postUser.userProfile.lastname}'),
-                    subtitle: Text('${_postUser.post.lastUpdate}'),
+                    subtitle: Text(
+                        '${DateFormat.yMMMMEEEEd().format(_postUser.post.lastUpdate)}'),
                     trailing: IconButton(
                       onPressed: () {
                         print('isFavorite');

@@ -11,13 +11,13 @@ class PostService {
         ? _db
             .collection('posts')
             .orderBy('lastUpdate', descending: true)
-            .limit(3)
+            .limit(2)
             .getDocuments()
         : _db
             .collection('posts')
             .orderBy('lastUpdate', descending: true)
             .startAfter([lastVisible.lastUpdate])
-            .limit(3)
+            .limit(2)
             .getDocuments();
   }
 

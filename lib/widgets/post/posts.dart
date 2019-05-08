@@ -83,14 +83,16 @@ class _PostsState extends State<Posts> {
             height: _postsContentHeight,
             child: ListView.builder(
               controller: _scrollController,
-              itemCount: state.postsUser.length,
+              itemCount: state.hasReachedMax
+                ? state.postsUser.length
+                : state.postsUser.length + 1,
               itemBuilder: (BuildContext context, int index) {
-                final PostUser postUser = state.postsUser[index];
+                // final PostUser postUser = state.postsUser[index];
 
-                return index >= state.posts.length
+                return index >= state.postsUser.length
                     ? BottomLoader()
                     : PostItem(
-                        postUser: postUser,
+                        postUser: state.postsUser[index],
                       );
               },
             ),

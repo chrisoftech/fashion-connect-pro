@@ -92,6 +92,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       try {
         if (currentState is PostUninitialized) {
           List<Post> posts = await postRepository.fetchPosts(lastVisible: null);
+
+          // fetch post users
           List<PostUser> postsUser =
               await postRepository.fetchPostsUsers(posts: posts);
 
@@ -108,6 +110,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           List<Post> posts =
               await postRepository.fetchPosts(lastVisible: lastVisible);
 
+          // fetch post users
           List<PostUser> postsUser =
               await postRepository.fetchPostsUsers(posts: posts);
 
